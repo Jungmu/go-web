@@ -1,0 +1,32 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+      {
+          "label": "build",
+          "dependsOn": [ "staticcheck" ]  // set last task
+      },
+      {
+          "label": "ent db generate",
+          "type": "shell",
+          "command": "go run -mod=mod entgo.io/ent/cmd/ent generate --feature sql/upsert,sql/lock ./ent/schema",
+          "group": "build",
+      },
+      {
+          "label": "go vet",
+          "type": "shell",
+          "command": "go vet ./...",
+          "group": "build",
+          "dependsOn": [ "ent db generate" ]
+      },
+      {
+          // go install honnef.co/go/tools/cmd/staticcheck@latest
+          "label": "staticcheck",
+          "type": "shell",
+          "command": "staticcheck -checks='all','-ST1000' ./...",
+          "group": "build",
+          "dependsOn": [ "go vet" ]
+      },
+  ]
+}
