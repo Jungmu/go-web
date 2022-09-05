@@ -52,6 +52,7 @@
       )
       .then(function (response) {
         alert("post article.");
+        location.href="/blog/article/"+title
       })
       .catch(function (error) {
         console.log(error);

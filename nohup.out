@@ -432,3 +432,73 @@ main.main()
 [GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
 Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
 [GIN-debug] Listening and serving HTTP on :6666
+[GIN] 2022/09/05 - 09:35:31 | 200 |    2.685322ms |   112.216.30.90 | GET      "/blog/edit/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    2.248283ms |   112.216.30.90 | PUT      "/blog/article/title"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    1.898521ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    1.660082ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    5.163405ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    1.616481ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    1.584401ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    1.709762ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    1.642162ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    1.490641ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    1.546122ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    1.532841ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    1.624642ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    1.749961ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    1.619802ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    1.678122ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    1.992962ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    2.153642ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    1.646682ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    1.623002ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    1.586841ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:52 | 308 |    1.607801ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.959002ms |   112.216.30.90 | PUT      "/blog/article/title"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.643802ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.556162ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.531802ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.669922ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.602882ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.833202ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.611881ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.764121ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.531081ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.562402ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.642642ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.582961ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.413042ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.448282ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.503082ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.493921ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.628361ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.547122ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.658482ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:35:57 | 308 |    1.445281ms |   112.216.30.90 | PUT      "/blog/article/devlog"
+[GIN] 2022/09/05 - 09:36:24 | 200 |    1.499881ms |   112.216.30.90 | GET      "/blog"
+[GIN] 2022/09/05 - 09:36:25 | 200 |    1.517242ms |   112.216.30.90 | GET      "/blog/article/devlog"
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] Loaded HTML Templates (7): 
+	- style.tmpl
+	- 
+	- blog-post.tmpl
+	- edit.tmpl
+	- index.tmpl
+	- nav.tmpl
+	- post.tmpl
+
+[GIN-debug] GET    /                         --> github.com/jungmu/go-web/route.Index (3 handlers)
+[GIN-debug] GET    /blog                     --> github.com/jungmu/go-web/route.Index (3 handlers)
+[GIN-debug] GET    /blog/post                --> github.com/jungmu/go-web/route.Post (3 handlers)
+[GIN-debug] GET    /blog/article/:title      --> github.com/jungmu/go-web/route.Get (3 handlers)
+[GIN-debug] GET    /blog/edit/:title         --> github.com/jungmu/go-web/route.Edit (3 handlers)
+[GIN-debug] PUT    /blog/article/:title      --> github.com/jungmu/go-web/api/blog.Edit (3 handlers)
+[GIN-debug] POST   /blog/article/:title      --> github.com/jungmu/go-web/api/blog.Post (3 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :6666

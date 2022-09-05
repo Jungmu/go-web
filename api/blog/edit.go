@@ -3,7 +3,6 @@ package blog
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -74,5 +73,5 @@ func Edit(c *gin.Context) {
 		return
 	}
 
-	c.Redirect(http.StatusPermanentRedirect, fmt.Sprintf("/blog/article/%s", r.Title))
+	c.Status(http.StatusOK)
 }

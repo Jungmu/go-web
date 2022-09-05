@@ -51,7 +51,8 @@
         },
       )
       .then(function (response) {
-        alert("post article.");
+        alert("edit article.");
+        location.href="/blog/article/"+title
       })
       .catch(function (error) {
         console.log(error);
