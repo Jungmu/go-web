@@ -2,10 +2,18 @@
   <head>
     <title>{{.title}}</title>
   </head>
+  <script
+    async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8659618338500304"
+    crossorigin="anonymous"
+  ></script>
   <body>
     {{template "nav.tmpl"}}
     <div class="article">
+      <p>update : {{.update}}</p>
+      <p>create : {{.create}}</p>
       {{.markdown}}
+      <p class="edit"><a href="/blog/edit/{{.title}}">edit</a></p>
     </div>
   </body>
 </html>

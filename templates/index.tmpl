@@ -10,7 +10,12 @@
       <div class="post">
         <h1><a href="/blog/article/{{.Title}}">{{.Title}}</a></h1>
         <a href="/blog/article/{{.Title}}">{{.SubTitle}}</a>
-        <br />
+        <br>
+        update : {{.UpdateDateTime}}
+        <br>
+        create : {{.CreateDateTime}}
+        <br>
+        <br>
         {{ range.Tags }}
         <a href="/blog?tag={{.}}">#{{.}}</a> 
         {{ end }}

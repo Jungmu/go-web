@@ -3,6 +3,7 @@ package blog
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -10,7 +11,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jungmu/go-web/db"
-	"github.com/jungmu/go-web/markdown"
 )
 
 type reqPost struct {
@@ -57,7 +57,7 @@ func Post(c *gin.Context) {
 		return
 	}
 
-	b, err := db.Client().Blog.Create().
+	_, err = db.Client().Blog.Create().
 		SetTitle(r.Title).
 		SetSubTitle(r.SubTitle).
 		SetTags(r.Tags).
@@ -72,10 +72,5 @@ func Post(c *gin.Context) {
 		return
 	}
 
-	c.HTML(http.StatusOK, "blog-post.tmpl", gin.H{
-		"title":    b.Title,
-		"subTitle": b.SubTitle,
-		"tags":     strings.Split(b.Tags, ","),
-		"markdown": markdown.MdToHtml(b.Content),
-	})
+	c.Redirect(http.StatusPermanentRedirect, fmt.Sprintf("/blog/article/%s", r.Title))
 }

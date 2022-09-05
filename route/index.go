@@ -7,18 +7,24 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jungmu/go-web/db"
+	"github.com/jungmu/go-web/ent"
 	"github.com/jungmu/go-web/ent/blog"
 )
 
 type blogPost struct {
-	Title    string   `json:"title"`
-	SubTitle string   `json:"subTitle"`
-	Tags     []string `json:"tags"`
+	Title          string   `json:"title"`
+	SubTitle       string   `json:"subTitle"`
+	Tags           []string `json:"tags"`
+	UpdateDateTime string   `json:"updateDateTime"`
+	CreateDateTime string   `json:"createDateTime"`
 }
 
 type req struct {
-	Tag string `form:"tag"`
+	Tag  string `form:"tag"`
+	Page int    `form:"page"`
 }
+
+const pageSize = 20
 
 func Index(c *gin.Context) {
 	r := req{}
@@ -33,6 +39,9 @@ func Index(c *gin.Context) {
 
 	b, err := db.Client().Blog.Query().
 		Where(blog.TagsContains(r.Tag)).
+		Limit(pageSize).
+		Offset(pageSize * r.Page).
+		Order(ent.Desc(blog.FieldCreateDatetime)).
 		All(c)
 
 	if err != nil {
@@ -49,6 +58,8 @@ func Index(c *gin.Context) {
 			p.Title,
 			p.SubTitle,
 			strings.Split(p.Tags, ","),
+			p.UpdateDatetime.Format("2006-01-02 15:04:05"),
+			p.CreateDatetime.Format("2006-01-02 15:04:05"),
 		})
 	}
 

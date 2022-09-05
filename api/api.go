@@ -8,12 +8,15 @@ import (
 
 func Init(r *gin.Engine) {
 	r.LoadHTMLGlob("templates/*")
+	r.GET("", route.Index)
 
 	blogGroup := r.Group("blog")
 	{
 		blogGroup.GET("", route.Index)
 		blogGroup.GET("post", route.Post)
 		blogGroup.GET("article/:title", route.Get)
+		blogGroup.GET("edit/:title", route.Edit)
+		blogGroup.PUT("article/:title", blog.Edit)
 		blogGroup.POST("article/:title", blog.Post)
 	}
 }

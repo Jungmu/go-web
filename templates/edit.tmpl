@@ -1,0 +1,61 @@
+<html>
+  <head>
+    <title>{{.title}}</title>
+  </head>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <body>
+    {{template "nav.tmpl"}}
+    <h1>Edit Article</h1>
+    <div class="editor">
+      <div class="editor-input-group">
+        <label for="title">title</label>
+        <input type="text" id="title" value="{{.title}}" />
+      </div>
+      <div class="editor-input-group">
+        <label for="sub-title">sub-title</label>
+        <input type="text" id="sub-title" value="{{.subTitle}}"/>
+      </div>
+      <div class="editor-input-group">
+        <label for="tags">tags</label>
+        <input type="text" id="tags" value="{{.tags}}"/>
+      </div>
+      <div class="editor-input-group">
+        <label for="content">content</label>
+        <textarea id="content" cols="30" rows="50">{{.content}}</textarea>
+      </div>
+      <div class="editor-input-group">
+        <label for="post-key">postKey</label>
+        <input type="password" id="post-key" />
+        <button onclick="edit()">summit</button>
+      </div>
+    </div>
+  </body>
+</html>
+<script>
+  function edit() {
+    var title = document.querySelector("#title").value;
+    var subTitle = document.querySelector("#sub-title").value;
+    var tags = document.querySelector("#tags").value;
+    var content = document.querySelector("#content").value;
+    var postKey = document.querySelector("#post-key").value;
+
+    axios
+      .put(
+        "/blog/article/title",
+        {
+          title: title,
+          subTitle: subTitle,
+          tags: tags,
+          content: content,
+          postKey: postKey,
+        },
+      )
+      .then(function (response) {
+        alert("post article.");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+</script>
+{{template "style.tmpl"}}
