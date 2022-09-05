@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	_ "github.com/lib/pq"
 
@@ -15,7 +16,20 @@ import (
 var db *ent.Client
 
 func init() {
-	err := godotenv.Load()
+	const rootDir = "go-web"
+	dir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	lastIndex := strings.LastIndex(dir, rootDir)
+	lastIndex += len(rootDir)
+	rootPath := dir[:lastIndex]
+	err = os.Chdir(rootPath)
+	if err != nil {
+		panic(err)
+	}
+
+	err = godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}

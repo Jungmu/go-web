@@ -1,0 +1,12 @@
+<html>
+  <head>
+    <title>{{.title}}</title>
+  </head>
+  <body>
+    {{template "nav.tmpl"}}
+    <div class="article">
+      {{.markdown}}
+    </div>
+  </body>
+</html>
+{{template "style.tmpl"}}

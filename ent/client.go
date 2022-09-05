@@ -10,6 +10,7 @@ import (
 
 	"github.com/jungmu/go-web/ent/migrate"
 
+	"github.com/jungmu/go-web/ent/blog"
 	"github.com/jungmu/go-web/ent/user"
 
 	"entgo.io/ent/dialect"
@@ -21,6 +22,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// Blog is the client for interacting with the Blog builders.
+	Blog *BlogClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -36,6 +39,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.Blog = NewBlogClient(c.config)
 	c.User = NewUserClient(c.config)
 }
 
@@ -70,6 +74,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:    ctx,
 		config: cfg,
+		Blog:   NewBlogClient(cfg),
 		User:   NewUserClient(cfg),
 	}, nil
 }
@@ -90,6 +95,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:    ctx,
 		config: cfg,
+		Blog:   NewBlogClient(cfg),
 		User:   NewUserClient(cfg),
 	}, nil
 }
@@ -97,7 +103,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		User.
+//		Blog.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -119,7 +125,98 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.Blog.Use(hooks...)
 	c.User.Use(hooks...)
+}
+
+// BlogClient is a client for the Blog schema.
+type BlogClient struct {
+	config
+}
+
+// NewBlogClient returns a client for the Blog from the given config.
+func NewBlogClient(c config) *BlogClient {
+	return &BlogClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `blog.Hooks(f(g(h())))`.
+func (c *BlogClient) Use(hooks ...Hook) {
+	c.hooks.Blog = append(c.hooks.Blog, hooks...)
+}
+
+// Create returns a builder for creating a Blog entity.
+func (c *BlogClient) Create() *BlogCreate {
+	mutation := newBlogMutation(c.config, OpCreate)
+	return &BlogCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Blog entities.
+func (c *BlogClient) CreateBulk(builders ...*BlogCreate) *BlogCreateBulk {
+	return &BlogCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Blog.
+func (c *BlogClient) Update() *BlogUpdate {
+	mutation := newBlogMutation(c.config, OpUpdate)
+	return &BlogUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *BlogClient) UpdateOne(b *Blog) *BlogUpdateOne {
+	mutation := newBlogMutation(c.config, OpUpdateOne, withBlog(b))
+	return &BlogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *BlogClient) UpdateOneID(id int64) *BlogUpdateOne {
+	mutation := newBlogMutation(c.config, OpUpdateOne, withBlogID(id))
+	return &BlogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Blog.
+func (c *BlogClient) Delete() *BlogDelete {
+	mutation := newBlogMutation(c.config, OpDelete)
+	return &BlogDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *BlogClient) DeleteOne(b *Blog) *BlogDeleteOne {
+	return c.DeleteOneID(b.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *BlogClient) DeleteOneID(id int64) *BlogDeleteOne {
+	builder := c.Delete().Where(blog.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &BlogDeleteOne{builder}
+}
+
+// Query returns a query builder for Blog.
+func (c *BlogClient) Query() *BlogQuery {
+	return &BlogQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Blog entity by its id.
+func (c *BlogClient) Get(ctx context.Context, id int64) (*Blog, error) {
+	return c.Query().Where(blog.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *BlogClient) GetX(ctx context.Context, id int64) *Blog {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *BlogClient) Hooks() []Hook {
+	return c.hooks.Blog
 }
 
 // UserClient is a client for the User schema.

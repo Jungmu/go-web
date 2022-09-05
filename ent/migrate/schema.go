@@ -8,6 +8,22 @@ import (
 )
 
 var (
+	// BlogsColumns holds the columns for the "blogs" table.
+	BlogsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "title", Type: field.TypeString, Unique: true},
+		{Name: "sub_title", Type: field.TypeString, Default: ""},
+		{Name: "tags", Type: field.TypeString, Default: ""},
+		{Name: "content", Type: field.TypeString},
+		{Name: "update_datetime", Type: field.TypeTime},
+		{Name: "create_datetime", Type: field.TypeTime},
+	}
+	// BlogsTable holds the schema information for the "blogs" table.
+	BlogsTable = &schema.Table{
+		Name:       "blogs",
+		Columns:    BlogsColumns,
+		PrimaryKey: []*schema.Column{BlogsColumns[0]},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -21,6 +37,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		BlogsTable,
 		UsersTable,
 	}
 )

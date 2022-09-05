@@ -1,0 +1,94 @@
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] Loaded HTML Templates (2): 
+	- 
+	- blog-post.tmpl
+
+[GIN-debug] GET    /user/:id                 --> github.com/jungmu/go-web/api/user.Get (3 handlers)
+[GIN-debug] GET    /blog/:title              --> github.com/jungmu/go-web/api/blog.Get (3 handlers)
+[GIN-debug] POST   /blog/:title              --> github.com/jungmu/go-web/api/blog.Post (3 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :6666
+[GIN] 2022/09/05 - 03:16:46 | 404 |         160ns |  211.208.235.44 | GET      "/"
+[GIN] 2022/09/05 - 03:16:47 | 404 |         440ns |  211.208.235.44 | GET      "/favicon.ico"
+[GIN] 2022/09/05 - 03:16:52 | 404 |         240ns |  211.208.235.44 | GET      "/get/title"
+2022/09/05 03:17:00 ent: blog not singular
+
+
+[31m2022/09/05 03:17:00 [Recovery] 2022/09/05 - 03:17:00 panic recovered:
+GET /blog/title HTTP/1.1
+Host: devlog.jungmu.dev
+Connection: close
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Accept-Encoding: gzip, deflate, br
+Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7,lb;q=0.6
+Connection: close
+Sec-Ch-Ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+Sec-Ch-Ua-Mobile: ?0
+Sec-Ch-Ua-Platform: "Windows"
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36
+X-Forwarded-For: 211.208.235.44
+X-Nginx-Proxy: true
+X-Real-Ip: 211.208.235.44
+
+
+runtime error: invalid memory address or nil pointer dereference
+/usr/local/go/src/runtime/panic.go:260 (0x453df)
+	panicmem: panic(memoryError)
+/usr/local/go/src/runtime/signal_unix.go:835 (0x5d557)
+	sigpanic: panicmem()
+/home/ubuntu/work/go-web/api/blog/get.go:30 (0x6ad938)
+	Get: "title":    b.Title,
+/home/ubuntu/go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173 (0x4562ab)
+	(*Context).Next: c.handlers[c.index](c)
+/home/ubuntu/go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/recovery.go:101 (0x45628c)
+	CustomRecoveryWithWriter.func1: c.Next()
+/home/ubuntu/go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173 (0x45554b)
+	(*Context).Next: c.handlers[c.index](c)
+/home/ubuntu/go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/logger.go:240 (0x455528)
+	LoggerWithConfig.func1: c.Next()
+/home/ubuntu/go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173 (0x45469f)
+	(*Context).Next: c.handlers[c.index](c)
+/home/ubuntu/go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/gin.go:616 (0x454388)
+	(*Engine).handleHTTPRequest: c.Next()
+/home/ubuntu/go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/gin.go:572 (0x453f7b)
+	(*Engine).ServeHTTP: engine.handleHTTPRequest(c)
+/usr/local/go/src/net/http/server.go:2947 (0x2774eb)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:1991 (0x272f33)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_arm64.s:1165 (0x76fb3)
+	goexit: MOVD	R0, R0	// NOP
+[0m
+[GIN] 2022/09/05 - 03:17:00 | 500 |    4.506364ms |  211.208.235.44 | GET      "/blog/title"
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] Loaded HTML Templates (6): 
+	- post.tmpl
+	- style.tmpl
+	- 
+	- blog-post.tmpl
+	- index.tmpl
+	- nav.tmpl
+
+[GIN-debug] GET    /blog                     --> github.com/jungmu/go-web/route.Index (3 handlers)
+[GIN-debug] GET    /blog/post                --> github.com/jungmu/go-web/route.Post (3 handlers)
+[GIN-debug] GET    /blog/article/:title      --> github.com/jungmu/go-web/route.Get (3 handlers)
+[GIN-debug] POST   /blog/article/:title      --> github.com/jungmu/go-web/api/blog.Post (3 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :6666

@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <title>{{.title}}</title>
+  </head>
+  <body>
+    {{template "nav.tmpl"}}
+    <h1>{{.title}}</h1>
+    <div class="posts">
+      {{ range.Posts }}
+      <div class="post">
+        <h1><a href="/blog/article/{{.Title}}">{{.Title}}</a></h1>
+        <a href="/blog/article/{{.Title}}">{{.SubTitle}}</a>
+        <br />
+        {{ range.Tags }}
+        <a href="/blog?tag={{.}}">#{{.}}</a> 
+        {{ end }}
+      </div>
+      {{ end }}
+    </div>
+  </body>
+</html>
+
+{{template "style.tmpl"}}
