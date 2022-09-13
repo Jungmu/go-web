@@ -40,7 +40,7 @@ func Index(c *gin.Context) {
 	}
 
 	b, err := db.Client().Blog.Query().
-		Where(blog.TagsContains(r.Tag)).
+		Where(blog.TagsContains(strings.TrimSpace(r.Tag))).
 		Limit(pageSize).
 		Offset(pageSize * r.Page).
 		Order(ent.Desc(blog.FieldCreateDatetime)).
@@ -72,9 +72,15 @@ func Index(c *gin.Context) {
 		log.Panicln(err)
 	}
 
+	totalVisit, err := blogDB.GetTotalVisitCount()
+	if err != nil {
+		log.Panicln(err)
+	}
+
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
-		"title":     "article list",
-		"Posts":     Posts,
-		"totalView": totalView,
+		"title":      "article list",
+		"Posts":      Posts,
+		"totalView":  totalView,
+		"totalVisit": totalVisit,
 	})
 }

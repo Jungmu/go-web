@@ -45,11 +45,17 @@ func Get(c *gin.Context) {
 		log.Panicln(err)
 	}
 
+	visitCount, err := blogDB.GetVisitCount(b.ID)
+	if err != nil {
+		log.Panicln(err)
+	}
+
 	c.HTML(http.StatusOK, "blog-post.tmpl", gin.H{
-		"title":     b.Title,
-		"create":    b.CreateDatetime.Format("2006-01-02 15:04:05"),
-		"update":    b.UpdateDatetime.Format("2006-01-02 15:04:05"),
-		"markdown":  markdown.MdToHtml(b.Content),
-		"viewCount": viewCount,
+		"title":      b.Title,
+		"create":     b.CreateDatetime.Format("2006-01-02 15:04:05"),
+		"update":     b.UpdateDatetime.Format("2006-01-02 15:04:05"),
+		"markdown":   markdown.MdToHtml(b.Content),
+		"viewCount":  viewCount,
+		"visitCount": visitCount,
 	})
 }

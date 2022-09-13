@@ -62,11 +62,14 @@
   }
   .article {
     padding: 0 3%;
-    margin: 0 3%;
+    margin: 0 auto;
+    max-width: 1080px;
   }
   .editor {
     display: flex;
     flex-direction: column;
+    max-width: 1080px;
+    margin: 0 auto;
   }
   .editor-input-group {
     display: flex;
@@ -92,6 +95,8 @@
 
   .edit {
     text-align: right;
+    padding: 0 3%;
+    margin: 0 3%;
   }
   .edit a:link {
     color: inherit;
@@ -111,9 +116,18 @@
     margin: 0 3%;
     text-align: right;
   }
+  .total-visit {
+    padding: 0 3%;
+    margin: 0 3%;
+    text-align: right;
+  }
+
+  .line {
+    border-bottom: 1px solid #ccc
+  }
 
   footer {
-    border-top: 1px solid #333;
+    border-top: 1px solid #999;
     padding: 3%;
     margin: 3%;
   }

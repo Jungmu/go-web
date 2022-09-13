@@ -32,7 +32,7 @@ func parse(str string, openCodeBlock bool) (string, bool) {
 		}
 	} else {
 		if strings.HasPrefix(str, "```") {
-			if strings.HasSuffix(str, "```") {
+			if strings.HasSuffix(str, "```") && len(str) > len("```") {
 				str = strings.ReplaceAll(str, "```", "")
 				str = fmt.Sprintf("<code>%s</code>", str)
 			} else {

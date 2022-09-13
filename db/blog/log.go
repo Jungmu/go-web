@@ -53,3 +53,24 @@ func GetTotalViewCount() (count int, err error) {
 
 	return
 }
+
+func GetVisitCount(id int64) (count int, err error) {
+	clients, err := db.Client().BlogLog.Query().
+		Where(bloglog.BlogID(id), bloglog.Reason(xconst.ReasonView)).
+		GroupBy(bloglog.FieldClientIP).
+		Strings(context.TODO())
+
+	count = len(clients)
+
+	return
+}
+
+func GetTotalVisitCount() (count int, err error) {
+	clients, err := db.Client().BlogLog.Query().
+		Where(bloglog.Reason(xconst.ReasonView)).
+		GroupBy(bloglog.FieldClientIP).
+		Strings(context.TODO())
+
+	count = len(clients)
+	return
+}

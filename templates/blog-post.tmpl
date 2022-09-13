@@ -12,10 +12,11 @@
     <div class="article">
       <p>update : {{.update}}</p>
       <p>create : {{.create}}</p>
-      <p>view count : {{.viewCount}}</p>
+      <p>view count : {{.viewCount}} / visit count : {{.visitCount}}</p>
+      <div class="line"></div>
       {{.markdown}}
-      <p class="edit"><a href="/blog/edit/{{.title}}">edit</a></p>
     </div>
+    <p class="edit"><a href="/blog/edit/{{.title}}">edit article</a></p>
   </body>
   {{template "footer.tmpl"}}
 </html>
