@@ -5,7 +5,8 @@
   <body>
     {{template "nav.tmpl"}}
     <h1>{{.title}}</h1>
-    <div class="posts">
+    <p class="total-view">total view : {{.totalView}}</p>
+    <div class="posts">      
       {{ range.Posts }}
       <div class="post">
         <h1><a href="/blog/article/{{.Title}}">{{.Title}}</a></h1>
@@ -23,6 +24,7 @@
       {{ end }}
     </div>
   </body>
+  {{template "footer.tmpl"}}
 </html>
 
 {{template "style.tmpl"}}

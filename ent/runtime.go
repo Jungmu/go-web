@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/jungmu/go-web/ent/blog"
+	"github.com/jungmu/go-web/ent/bloglog"
 	"github.com/jungmu/go-web/ent/schema"
 )
 
@@ -33,4 +34,10 @@ func init() {
 	blogDescCreateDatetime := blogFields[6].Descriptor()
 	// blog.DefaultCreateDatetime holds the default value on creation for the create_datetime field.
 	blog.DefaultCreateDatetime = blogDescCreateDatetime.Default.(func() time.Time)
+	bloglogFields := schema.BlogLog{}.Fields()
+	_ = bloglogFields
+	// bloglogDescCreateDatetime is the schema descriptor for create_datetime field.
+	bloglogDescCreateDatetime := bloglogFields[6].Descriptor()
+	// bloglog.DefaultCreateDatetime holds the default value on creation for the create_datetime field.
+	bloglog.DefaultCreateDatetime = bloglogDescCreateDatetime.Default.(func() time.Time)
 }

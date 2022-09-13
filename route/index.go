@@ -7,8 +7,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jungmu/go-web/db"
+	blogDB "github.com/jungmu/go-web/db/blog"
 	"github.com/jungmu/go-web/ent"
 	"github.com/jungmu/go-web/ent/blog"
+	"github.com/jungmu/go-web/xconst"
 )
 
 type blogPost struct {
@@ -63,8 +65,16 @@ func Index(c *gin.Context) {
 		})
 	}
 
+	blogDB.Log(0, c.Request.RequestURI, xconst.ReasonIndex, c.ClientIP(), r)
+
+	totalView, err := blogDB.GetTotalViewCount()
+	if err != nil {
+		log.Panicln(err)
+	}
+
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
-		"title": "article list",
-		"Posts": Posts,
+		"title":     "article list",
+		"Posts":     Posts,
+		"totalView": totalView,
 	})
 }

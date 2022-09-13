@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/jungmu/go-web/ent/blog"
+	"github.com/jungmu/go-web/ent/bloglog"
 	"github.com/jungmu/go-web/ent/predicate"
-	"github.com/jungmu/go-web/ent/user"
 
 	"entgo.io/ent"
 )
@@ -25,8 +25,8 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeBlog = "Blog"
-	TypeUser = "User"
+	TypeBlog    = "Blog"
+	TypeBlogLog = "BlogLog"
 )
 
 // BlogMutation represents an operation that mutates the Blog nodes in the graph.
@@ -616,30 +616,36 @@ func (m *BlogMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Blog edge %s", name)
 }
 
-// UserMutation represents an operation that mutates the User nodes in the graph.
-type UserMutation struct {
+// BlogLogMutation represents an operation that mutates the BlogLog nodes in the graph.
+type BlogLogMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int64
-	name          *string
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*User, error)
-	predicates    []predicate.User
+	op              Op
+	typ             string
+	id              *int64
+	blog_id         *int64
+	addblog_id      *int64
+	url             *string
+	reason          *string
+	detail          *string
+	client_ip       *string
+	create_datetime *time.Time
+	clearedFields   map[string]struct{}
+	done            bool
+	oldValue        func(context.Context) (*BlogLog, error)
+	predicates      []predicate.BlogLog
 }
 
-var _ ent.Mutation = (*UserMutation)(nil)
+var _ ent.Mutation = (*BlogLogMutation)(nil)
 
-// userOption allows management of the mutation configuration using functional options.
-type userOption func(*UserMutation)
+// bloglogOption allows management of the mutation configuration using functional options.
+type bloglogOption func(*BlogLogMutation)
 
-// newUserMutation creates new mutation for the User entity.
-func newUserMutation(c config, op Op, opts ...userOption) *UserMutation {
-	m := &UserMutation{
+// newBlogLogMutation creates new mutation for the BlogLog entity.
+func newBlogLogMutation(c config, op Op, opts ...bloglogOption) *BlogLogMutation {
+	m := &BlogLogMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeUser,
+		typ:           TypeBlogLog,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -648,20 +654,20 @@ func newUserMutation(c config, op Op, opts ...userOption) *UserMutation {
 	return m
 }
 
-// withUserID sets the ID field of the mutation.
-func withUserID(id int64) userOption {
-	return func(m *UserMutation) {
+// withBlogLogID sets the ID field of the mutation.
+func withBlogLogID(id int64) bloglogOption {
+	return func(m *BlogLogMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *User
+			value *BlogLog
 		)
-		m.oldValue = func(ctx context.Context) (*User, error) {
+		m.oldValue = func(ctx context.Context) (*BlogLog, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().User.Get(ctx, id)
+					value, err = m.Client().BlogLog.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -670,10 +676,10 @@ func withUserID(id int64) userOption {
 	}
 }
 
-// withUser sets the old User of the mutation.
-func withUser(node *User) userOption {
-	return func(m *UserMutation) {
-		m.oldValue = func(context.Context) (*User, error) {
+// withBlogLog sets the old BlogLog of the mutation.
+func withBlogLog(node *BlogLog) bloglogOption {
+	return func(m *BlogLogMutation) {
+		m.oldValue = func(context.Context) (*BlogLog, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -682,7 +688,7 @@ func withUser(node *User) userOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m UserMutation) Client() *Client {
+func (m BlogLogMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -690,7 +696,7 @@ func (m UserMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m UserMutation) Tx() (*Tx, error) {
+func (m BlogLogMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -700,14 +706,14 @@ func (m UserMutation) Tx() (*Tx, error) {
 }
 
 // SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of User entities.
-func (m *UserMutation) SetID(id int64) {
+// operation is only accepted on creation of BlogLog entities.
+func (m *BlogLogMutation) SetID(id int64) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *UserMutation) ID() (id int64, exists bool) {
+func (m *BlogLogMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -718,7 +724,7 @@ func (m *UserMutation) ID() (id int64, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *UserMutation) IDs(ctx context.Context) ([]int64, error) {
+func (m *BlogLogMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -727,70 +733,285 @@ func (m *UserMutation) IDs(ctx context.Context) ([]int64, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().User.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().BlogLog.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
-// SetName sets the "name" field.
-func (m *UserMutation) SetName(s string) {
-	m.name = &s
+// SetBlogID sets the "blog_id" field.
+func (m *BlogLogMutation) SetBlogID(i int64) {
+	m.blog_id = &i
+	m.addblog_id = nil
 }
 
-// Name returns the value of the "name" field in the mutation.
-func (m *UserMutation) Name() (r string, exists bool) {
-	v := m.name
+// BlogID returns the value of the "blog_id" field in the mutation.
+func (m *BlogLogMutation) BlogID() (r int64, exists bool) {
+	v := m.blog_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldName returns the old "name" field's value of the User entity.
-// If the User object wasn't provided to the builder, the object is fetched from the database.
+// OldBlogID returns the old "blog_id" field's value of the BlogLog entity.
+// If the BlogLog object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldName(ctx context.Context) (v string, err error) {
+func (m *BlogLogMutation) OldBlogID(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldName is only allowed on UpdateOne operations")
+		return v, errors.New("OldBlogID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldName requires an ID field in the mutation")
+		return v, errors.New("OldBlogID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldName: %w", err)
+		return v, fmt.Errorf("querying old value for OldBlogID: %w", err)
 	}
-	return oldValue.Name, nil
+	return oldValue.BlogID, nil
 }
 
-// ResetName resets all changes to the "name" field.
-func (m *UserMutation) ResetName() {
-	m.name = nil
+// AddBlogID adds i to the "blog_id" field.
+func (m *BlogLogMutation) AddBlogID(i int64) {
+	if m.addblog_id != nil {
+		*m.addblog_id += i
+	} else {
+		m.addblog_id = &i
+	}
 }
 
-// Where appends a list predicates to the UserMutation builder.
-func (m *UserMutation) Where(ps ...predicate.User) {
+// AddedBlogID returns the value that was added to the "blog_id" field in this mutation.
+func (m *BlogLogMutation) AddedBlogID() (r int64, exists bool) {
+	v := m.addblog_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetBlogID resets all changes to the "blog_id" field.
+func (m *BlogLogMutation) ResetBlogID() {
+	m.blog_id = nil
+	m.addblog_id = nil
+}
+
+// SetURL sets the "url" field.
+func (m *BlogLogMutation) SetURL(s string) {
+	m.url = &s
+}
+
+// URL returns the value of the "url" field in the mutation.
+func (m *BlogLogMutation) URL() (r string, exists bool) {
+	v := m.url
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldURL returns the old "url" field's value of the BlogLog entity.
+// If the BlogLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogLogMutation) OldURL(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldURL is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldURL requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldURL: %w", err)
+	}
+	return oldValue.URL, nil
+}
+
+// ResetURL resets all changes to the "url" field.
+func (m *BlogLogMutation) ResetURL() {
+	m.url = nil
+}
+
+// SetReason sets the "reason" field.
+func (m *BlogLogMutation) SetReason(s string) {
+	m.reason = &s
+}
+
+// Reason returns the value of the "reason" field in the mutation.
+func (m *BlogLogMutation) Reason() (r string, exists bool) {
+	v := m.reason
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldReason returns the old "reason" field's value of the BlogLog entity.
+// If the BlogLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogLogMutation) OldReason(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldReason is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldReason requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldReason: %w", err)
+	}
+	return oldValue.Reason, nil
+}
+
+// ResetReason resets all changes to the "reason" field.
+func (m *BlogLogMutation) ResetReason() {
+	m.reason = nil
+}
+
+// SetDetail sets the "detail" field.
+func (m *BlogLogMutation) SetDetail(s string) {
+	m.detail = &s
+}
+
+// Detail returns the value of the "detail" field in the mutation.
+func (m *BlogLogMutation) Detail() (r string, exists bool) {
+	v := m.detail
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDetail returns the old "detail" field's value of the BlogLog entity.
+// If the BlogLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogLogMutation) OldDetail(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDetail is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDetail requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDetail: %w", err)
+	}
+	return oldValue.Detail, nil
+}
+
+// ResetDetail resets all changes to the "detail" field.
+func (m *BlogLogMutation) ResetDetail() {
+	m.detail = nil
+}
+
+// SetClientIP sets the "client_ip" field.
+func (m *BlogLogMutation) SetClientIP(s string) {
+	m.client_ip = &s
+}
+
+// ClientIP returns the value of the "client_ip" field in the mutation.
+func (m *BlogLogMutation) ClientIP() (r string, exists bool) {
+	v := m.client_ip
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldClientIP returns the old "client_ip" field's value of the BlogLog entity.
+// If the BlogLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogLogMutation) OldClientIP(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldClientIP is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldClientIP requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldClientIP: %w", err)
+	}
+	return oldValue.ClientIP, nil
+}
+
+// ResetClientIP resets all changes to the "client_ip" field.
+func (m *BlogLogMutation) ResetClientIP() {
+	m.client_ip = nil
+}
+
+// SetCreateDatetime sets the "create_datetime" field.
+func (m *BlogLogMutation) SetCreateDatetime(t time.Time) {
+	m.create_datetime = &t
+}
+
+// CreateDatetime returns the value of the "create_datetime" field in the mutation.
+func (m *BlogLogMutation) CreateDatetime() (r time.Time, exists bool) {
+	v := m.create_datetime
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreateDatetime returns the old "create_datetime" field's value of the BlogLog entity.
+// If the BlogLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogLogMutation) OldCreateDatetime(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreateDatetime is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreateDatetime requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreateDatetime: %w", err)
+	}
+	return oldValue.CreateDatetime, nil
+}
+
+// ResetCreateDatetime resets all changes to the "create_datetime" field.
+func (m *BlogLogMutation) ResetCreateDatetime() {
+	m.create_datetime = nil
+}
+
+// Where appends a list predicates to the BlogLogMutation builder.
+func (m *BlogLogMutation) Where(ps ...predicate.BlogLog) {
 	m.predicates = append(m.predicates, ps...)
 }
 
 // Op returns the operation name.
-func (m *UserMutation) Op() Op {
+func (m *BlogLogMutation) Op() Op {
 	return m.op
 }
 
-// Type returns the node type of this mutation (User).
-func (m *UserMutation) Type() string {
+// Type returns the node type of this mutation (BlogLog).
+func (m *BlogLogMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 1)
-	if m.name != nil {
-		fields = append(fields, user.FieldName)
+func (m *BlogLogMutation) Fields() []string {
+	fields := make([]string, 0, 6)
+	if m.blog_id != nil {
+		fields = append(fields, bloglog.FieldBlogID)
+	}
+	if m.url != nil {
+		fields = append(fields, bloglog.FieldURL)
+	}
+	if m.reason != nil {
+		fields = append(fields, bloglog.FieldReason)
+	}
+	if m.detail != nil {
+		fields = append(fields, bloglog.FieldDetail)
+	}
+	if m.client_ip != nil {
+		fields = append(fields, bloglog.FieldClientIP)
+	}
+	if m.create_datetime != nil {
+		fields = append(fields, bloglog.FieldCreateDatetime)
 	}
 	return fields
 }
@@ -798,10 +1019,20 @@ func (m *UserMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *UserMutation) Field(name string) (ent.Value, bool) {
+func (m *BlogLogMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case user.FieldName:
-		return m.Name()
+	case bloglog.FieldBlogID:
+		return m.BlogID()
+	case bloglog.FieldURL:
+		return m.URL()
+	case bloglog.FieldReason:
+		return m.Reason()
+	case bloglog.FieldDetail:
+		return m.Detail()
+	case bloglog.FieldClientIP:
+		return m.ClientIP()
+	case bloglog.FieldCreateDatetime:
+		return m.CreateDatetime()
 	}
 	return nil, false
 }
@@ -809,126 +1040,201 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *BlogLogMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case user.FieldName:
-		return m.OldName(ctx)
+	case bloglog.FieldBlogID:
+		return m.OldBlogID(ctx)
+	case bloglog.FieldURL:
+		return m.OldURL(ctx)
+	case bloglog.FieldReason:
+		return m.OldReason(ctx)
+	case bloglog.FieldDetail:
+		return m.OldDetail(ctx)
+	case bloglog.FieldClientIP:
+		return m.OldClientIP(ctx)
+	case bloglog.FieldCreateDatetime:
+		return m.OldCreateDatetime(ctx)
 	}
-	return nil, fmt.Errorf("unknown User field %s", name)
+	return nil, fmt.Errorf("unknown BlogLog field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *UserMutation) SetField(name string, value ent.Value) error {
+func (m *BlogLogMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case user.FieldName:
+	case bloglog.FieldBlogID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBlogID(v)
+		return nil
+	case bloglog.FieldURL:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetName(v)
+		m.SetURL(v)
+		return nil
+	case bloglog.FieldReason:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetReason(v)
+		return nil
+	case bloglog.FieldDetail:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDetail(v)
+		return nil
+	case bloglog.FieldClientIP:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetClientIP(v)
+		return nil
+	case bloglog.FieldCreateDatetime:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreateDatetime(v)
 		return nil
 	}
-	return fmt.Errorf("unknown User field %s", name)
+	return fmt.Errorf("unknown BlogLog field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *UserMutation) AddedFields() []string {
-	return nil
+func (m *BlogLogMutation) AddedFields() []string {
+	var fields []string
+	if m.addblog_id != nil {
+		fields = append(fields, bloglog.FieldBlogID)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
+func (m *BlogLogMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case bloglog.FieldBlogID:
+		return m.AddedBlogID()
+	}
 	return nil, false
 }
 
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *UserMutation) AddField(name string, value ent.Value) error {
+func (m *BlogLogMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case bloglog.FieldBlogID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddBlogID(v)
+		return nil
 	}
-	return fmt.Errorf("unknown User numeric field %s", name)
+	return fmt.Errorf("unknown BlogLog numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *UserMutation) ClearedFields() []string {
+func (m *BlogLogMutation) ClearedFields() []string {
 	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *UserMutation) FieldCleared(name string) bool {
+func (m *BlogLogMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *UserMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown User nullable field %s", name)
+func (m *BlogLogMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown BlogLog nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *UserMutation) ResetField(name string) error {
+func (m *BlogLogMutation) ResetField(name string) error {
 	switch name {
-	case user.FieldName:
-		m.ResetName()
+	case bloglog.FieldBlogID:
+		m.ResetBlogID()
+		return nil
+	case bloglog.FieldURL:
+		m.ResetURL()
+		return nil
+	case bloglog.FieldReason:
+		m.ResetReason()
+		return nil
+	case bloglog.FieldDetail:
+		m.ResetDetail()
+		return nil
+	case bloglog.FieldClientIP:
+		m.ResetClientIP()
+		return nil
+	case bloglog.FieldCreateDatetime:
+		m.ResetCreateDatetime()
 		return nil
 	}
-	return fmt.Errorf("unknown User field %s", name)
+	return fmt.Errorf("unknown BlogLog field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *UserMutation) AddedEdges() []string {
+func (m *BlogLogMutation) AddedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *UserMutation) AddedIDs(name string) []ent.Value {
+func (m *BlogLogMutation) AddedIDs(name string) []ent.Value {
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *UserMutation) RemovedEdges() []string {
+func (m *BlogLogMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *UserMutation) RemovedIDs(name string) []ent.Value {
+func (m *BlogLogMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *UserMutation) ClearedEdges() []string {
+func (m *BlogLogMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *UserMutation) EdgeCleared(name string) bool {
+func (m *BlogLogMutation) EdgeCleared(name string) bool {
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *UserMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown User unique edge %s", name)
+func (m *BlogLogMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown BlogLog unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *UserMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown User edge %s", name)
+func (m *BlogLogMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown BlogLog edge %s", name)
 }

@@ -10,6 +10,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jungmu/go-web/db"
+	blogDB "github.com/jungmu/go-web/db/blog"
+	"github.com/jungmu/go-web/xconst"
 )
 
 type reqPost struct {
@@ -56,7 +58,7 @@ func Post(c *gin.Context) {
 		return
 	}
 
-	_, err = db.Client().Blog.Create().
+	result, err := db.Client().Blog.Create().
 		SetTitle(r.Title).
 		SetSubTitle(r.SubTitle).
 		SetTags(r.Tags).
@@ -70,6 +72,8 @@ func Post(c *gin.Context) {
 		})
 		return
 	}
+
+	blogDB.Log(result.ID, c.Request.RequestURI, xconst.ReasonPost, c.ClientIP(), result)
 
 	c.Status(http.StatusOK)
 }

@@ -10,7 +10,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jungmu/go-web/db"
+	blogDB "github.com/jungmu/go-web/db/blog"
 	"github.com/jungmu/go-web/ent/blog"
+	"github.com/jungmu/go-web/xconst"
 )
 
 type reqEdit struct {
@@ -57,7 +59,7 @@ func Edit(c *gin.Context) {
 		return
 	}
 
-	_, err = db.Client().Blog.Update().
+	result, err := db.Client().Blog.Update().
 		Where(blog.Title(r.Title)).
 		SetTitle(r.Title).
 		SetSubTitle(r.SubTitle).
@@ -72,6 +74,8 @@ func Edit(c *gin.Context) {
 		})
 		return
 	}
+
+	blogDB.Log(0, c.Request.RequestURI, xconst.ReasonEdit, c.ClientIP(), result)
 
 	c.Status(http.StatusOK)
 }

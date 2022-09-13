@@ -9,5 +9,5 @@ import (
 // Blog is the predicate function for blog builders.
 type Blog func(*sql.Selector)
 
-// User is the predicate function for user builders.
-type User func(*sql.Selector)
+// BlogLog is the predicate function for bloglog builders.
+type BlogLog func(*sql.Selector)

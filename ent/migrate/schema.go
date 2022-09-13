@@ -24,21 +24,33 @@ var (
 		Columns:    BlogsColumns,
 		PrimaryKey: []*schema.Column{BlogsColumns[0]},
 	}
-	// UsersColumns holds the columns for the "users" table.
-	UsersColumns = []*schema.Column{
+	// BlogLogsColumns holds the columns for the "blog_logs" table.
+	BlogLogsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "name", Type: field.TypeString},
+		{Name: "blog_id", Type: field.TypeInt64},
+		{Name: "url", Type: field.TypeString},
+		{Name: "reason", Type: field.TypeString},
+		{Name: "detail", Type: field.TypeString},
+		{Name: "client_ip", Type: field.TypeString},
+		{Name: "create_datetime", Type: field.TypeTime},
 	}
-	// UsersTable holds the schema information for the "users" table.
-	UsersTable = &schema.Table{
-		Name:       "users",
-		Columns:    UsersColumns,
-		PrimaryKey: []*schema.Column{UsersColumns[0]},
+	// BlogLogsTable holds the schema information for the "blog_logs" table.
+	BlogLogsTable = &schema.Table{
+		Name:       "blog_logs",
+		Columns:    BlogLogsColumns,
+		PrimaryKey: []*schema.Column{BlogLogsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "bloglog_blog_id",
+				Unique:  false,
+				Columns: []*schema.Column{BlogLogsColumns[1]},
+			},
+		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		BlogsTable,
-		UsersTable,
+		BlogLogsTable,
 	}
 )
 

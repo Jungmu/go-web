@@ -22,15 +22,15 @@ func (f BlogFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error)
 	return f(ctx, mv)
 }
 
-// The UserFunc type is an adapter to allow the use of ordinary
-// function as User mutator.
-type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)
+// The BlogLogFunc type is an adapter to allow the use of ordinary
+// function as BlogLog mutator.
+type BlogLogFunc func(context.Context, *ent.BlogLogMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f UserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.UserMutation)
+func (f BlogLogFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.BlogLogMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BlogLogMutation", m)
 	}
 	return f(ctx, mv)
 }

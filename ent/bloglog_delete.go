@@ -9,49 +9,49 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/jungmu/go-web/ent/bloglog"
 	"github.com/jungmu/go-web/ent/predicate"
-	"github.com/jungmu/go-web/ent/user"
 )
 
-// UserDelete is the builder for deleting a User entity.
-type UserDelete struct {
+// BlogLogDelete is the builder for deleting a BlogLog entity.
+type BlogLogDelete struct {
 	config
 	hooks    []Hook
-	mutation *UserMutation
+	mutation *BlogLogMutation
 }
 
-// Where appends a list predicates to the UserDelete builder.
-func (ud *UserDelete) Where(ps ...predicate.User) *UserDelete {
-	ud.mutation.Where(ps...)
-	return ud
+// Where appends a list predicates to the BlogLogDelete builder.
+func (bld *BlogLogDelete) Where(ps ...predicate.BlogLog) *BlogLogDelete {
+	bld.mutation.Where(ps...)
+	return bld
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (ud *UserDelete) Exec(ctx context.Context) (int, error) {
+func (bld *BlogLogDelete) Exec(ctx context.Context) (int, error) {
 	var (
 		err      error
 		affected int
 	)
-	if len(ud.hooks) == 0 {
-		affected, err = ud.sqlExec(ctx)
+	if len(bld.hooks) == 0 {
+		affected, err = bld.sqlExec(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*UserMutation)
+			mutation, ok := m.(*BlogLogMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
 			}
-			ud.mutation = mutation
-			affected, err = ud.sqlExec(ctx)
+			bld.mutation = mutation
+			affected, err = bld.sqlExec(ctx)
 			mutation.done = true
 			return affected, err
 		})
-		for i := len(ud.hooks) - 1; i >= 0; i-- {
-			if ud.hooks[i] == nil {
+		for i := len(bld.hooks) - 1; i >= 0; i-- {
+			if bld.hooks[i] == nil {
 				return 0, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
 			}
-			mut = ud.hooks[i](mut)
+			mut = bld.hooks[i](mut)
 		}
-		if _, err := mut.Mutate(ctx, ud.mutation); err != nil {
+		if _, err := mut.Mutate(ctx, bld.mutation); err != nil {
 			return 0, err
 		}
 	}
@@ -59,57 +59,57 @@ func (ud *UserDelete) Exec(ctx context.Context) (int, error) {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ud *UserDelete) ExecX(ctx context.Context) int {
-	n, err := ud.Exec(ctx)
+func (bld *BlogLogDelete) ExecX(ctx context.Context) int {
+	n, err := bld.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (ud *UserDelete) sqlExec(ctx context.Context) (int, error) {
+func (bld *BlogLogDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := &sqlgraph.DeleteSpec{
 		Node: &sqlgraph.NodeSpec{
-			Table: user.Table,
+			Table: bloglog.Table,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeInt64,
-				Column: user.FieldID,
+				Column: bloglog.FieldID,
 			},
 		},
 	}
-	if ps := ud.mutation.predicates; len(ps) > 0 {
+	if ps := bld.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, ud.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, bld.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
 	return affected, err
 }
 
-// UserDeleteOne is the builder for deleting a single User entity.
-type UserDeleteOne struct {
-	ud *UserDelete
+// BlogLogDeleteOne is the builder for deleting a single BlogLog entity.
+type BlogLogDeleteOne struct {
+	bld *BlogLogDelete
 }
 
 // Exec executes the deletion query.
-func (udo *UserDeleteOne) Exec(ctx context.Context) error {
-	n, err := udo.ud.Exec(ctx)
+func (bldo *BlogLogDeleteOne) Exec(ctx context.Context) error {
+	n, err := bldo.bld.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
 	case n == 0:
-		return &NotFoundError{user.Label}
+		return &NotFoundError{bloglog.Label}
 	default:
 		return nil
 	}
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (udo *UserDeleteOne) ExecX(ctx context.Context) {
-	udo.ud.ExecX(ctx)
+func (bldo *BlogLogDeleteOne) ExecX(ctx context.Context) {
+	bldo.bld.ExecX(ctx)
 }

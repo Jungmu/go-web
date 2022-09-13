@@ -11,7 +11,7 @@ import (
 	"github.com/jungmu/go-web/ent/migrate"
 
 	"github.com/jungmu/go-web/ent/blog"
-	"github.com/jungmu/go-web/ent/user"
+	"github.com/jungmu/go-web/ent/bloglog"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -24,8 +24,8 @@ type Client struct {
 	Schema *migrate.Schema
 	// Blog is the client for interacting with the Blog builders.
 	Blog *BlogClient
-	// User is the client for interacting with the User builders.
-	User *UserClient
+	// BlogLog is the client for interacting with the BlogLog builders.
+	BlogLog *BlogLogClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -40,7 +40,7 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Blog = NewBlogClient(c.config)
-	c.User = NewUserClient(c.config)
+	c.BlogLog = NewBlogLogClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -72,10 +72,10 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		Blog:   NewBlogClient(cfg),
-		User:   NewUserClient(cfg),
+		ctx:     ctx,
+		config:  cfg,
+		Blog:    NewBlogClient(cfg),
+		BlogLog: NewBlogLogClient(cfg),
 	}, nil
 }
 
@@ -93,10 +93,10 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		Blog:   NewBlogClient(cfg),
-		User:   NewUserClient(cfg),
+		ctx:     ctx,
+		config:  cfg,
+		Blog:    NewBlogClient(cfg),
+		BlogLog: NewBlogLogClient(cfg),
 	}, nil
 }
 
@@ -126,7 +126,7 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.Blog.Use(hooks...)
-	c.User.Use(hooks...)
+	c.BlogLog.Use(hooks...)
 }
 
 // BlogClient is a client for the Blog schema.
@@ -219,84 +219,84 @@ func (c *BlogClient) Hooks() []Hook {
 	return c.hooks.Blog
 }
 
-// UserClient is a client for the User schema.
-type UserClient struct {
+// BlogLogClient is a client for the BlogLog schema.
+type BlogLogClient struct {
 	config
 }
 
-// NewUserClient returns a client for the User from the given config.
-func NewUserClient(c config) *UserClient {
-	return &UserClient{config: c}
+// NewBlogLogClient returns a client for the BlogLog from the given config.
+func NewBlogLogClient(c config) *BlogLogClient {
+	return &BlogLogClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `user.Hooks(f(g(h())))`.
-func (c *UserClient) Use(hooks ...Hook) {
-	c.hooks.User = append(c.hooks.User, hooks...)
+// A call to `Use(f, g, h)` equals to `bloglog.Hooks(f(g(h())))`.
+func (c *BlogLogClient) Use(hooks ...Hook) {
+	c.hooks.BlogLog = append(c.hooks.BlogLog, hooks...)
 }
 
-// Create returns a builder for creating a User entity.
-func (c *UserClient) Create() *UserCreate {
-	mutation := newUserMutation(c.config, OpCreate)
-	return &UserCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a BlogLog entity.
+func (c *BlogLogClient) Create() *BlogLogCreate {
+	mutation := newBlogLogMutation(c.config, OpCreate)
+	return &BlogLogCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of User entities.
-func (c *UserClient) CreateBulk(builders ...*UserCreate) *UserCreateBulk {
-	return &UserCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of BlogLog entities.
+func (c *BlogLogClient) CreateBulk(builders ...*BlogLogCreate) *BlogLogCreateBulk {
+	return &BlogLogCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for User.
-func (c *UserClient) Update() *UserUpdate {
-	mutation := newUserMutation(c.config, OpUpdate)
-	return &UserUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for BlogLog.
+func (c *BlogLogClient) Update() *BlogLogUpdate {
+	mutation := newBlogLogMutation(c.config, OpUpdate)
+	return &BlogLogUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *UserClient) UpdateOne(u *User) *UserUpdateOne {
-	mutation := newUserMutation(c.config, OpUpdateOne, withUser(u))
-	return &UserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *BlogLogClient) UpdateOne(bl *BlogLog) *BlogLogUpdateOne {
+	mutation := newBlogLogMutation(c.config, OpUpdateOne, withBlogLog(bl))
+	return &BlogLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *UserClient) UpdateOneID(id int64) *UserUpdateOne {
-	mutation := newUserMutation(c.config, OpUpdateOne, withUserID(id))
-	return &UserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *BlogLogClient) UpdateOneID(id int64) *BlogLogUpdateOne {
+	mutation := newBlogLogMutation(c.config, OpUpdateOne, withBlogLogID(id))
+	return &BlogLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for User.
-func (c *UserClient) Delete() *UserDelete {
-	mutation := newUserMutation(c.config, OpDelete)
-	return &UserDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for BlogLog.
+func (c *BlogLogClient) Delete() *BlogLogDelete {
+	mutation := newBlogLogMutation(c.config, OpDelete)
+	return &BlogLogDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *UserClient) DeleteOne(u *User) *UserDeleteOne {
-	return c.DeleteOneID(u.ID)
+func (c *BlogLogClient) DeleteOne(bl *BlogLog) *BlogLogDeleteOne {
+	return c.DeleteOneID(bl.ID)
 }
 
 // DeleteOne returns a builder for deleting the given entity by its id.
-func (c *UserClient) DeleteOneID(id int64) *UserDeleteOne {
-	builder := c.Delete().Where(user.ID(id))
+func (c *BlogLogClient) DeleteOneID(id int64) *BlogLogDeleteOne {
+	builder := c.Delete().Where(bloglog.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &UserDeleteOne{builder}
+	return &BlogLogDeleteOne{builder}
 }
 
-// Query returns a query builder for User.
-func (c *UserClient) Query() *UserQuery {
-	return &UserQuery{
+// Query returns a query builder for BlogLog.
+func (c *BlogLogClient) Query() *BlogLogQuery {
+	return &BlogLogQuery{
 		config: c.config,
 	}
 }
 
-// Get returns a User entity by its id.
-func (c *UserClient) Get(ctx context.Context, id int64) (*User, error) {
-	return c.Query().Where(user.ID(id)).Only(ctx)
+// Get returns a BlogLog entity by its id.
+func (c *BlogLogClient) Get(ctx context.Context, id int64) (*BlogLog, error) {
+	return c.Query().Where(bloglog.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *UserClient) GetX(ctx context.Context, id int64) *User {
+func (c *BlogLogClient) GetX(ctx context.Context, id int64) *BlogLog {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -305,6 +305,6 @@ func (c *UserClient) GetX(ctx context.Context, id int64) *User {
 }
 
 // Hooks returns the client hooks.
-func (c *UserClient) Hooks() []Hook {
-	return c.hooks.User
+func (c *BlogLogClient) Hooks() []Hook {
+	return c.hooks.BlogLog
 }

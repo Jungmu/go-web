@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/jungmu/go-web/ent/blog"
-	"github.com/jungmu/go-web/ent/user"
+	"github.com/jungmu/go-web/ent/bloglog"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -32,8 +32,8 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		blog.Table: blog.ValidColumn,
-		user.Table: user.ValidColumn,
+		blog.Table:    blog.ValidColumn,
+		bloglog.Table: bloglog.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {
