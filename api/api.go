@@ -10,6 +10,7 @@ func Init(r *gin.Engine) {
 	r.Static("/assets", "./assets")
 	r.StaticFile("/robots.txt", "./assets/robots.txt")
 	r.StaticFile("/googlef7a4061446ba6717.html", "./assets/googlef7a4061446ba6717.html")
+	r.StaticFile("/naver7150e5ff6ce115875d92e8b3c751ea7f.html", "./assets/naver7150e5ff6ce115875d92e8b3c751ea7f.html")
 	r.LoadHTMLGlob("templates/*")
 	r.GET("", route.Index)
 

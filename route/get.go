@@ -52,6 +52,7 @@ func Get(c *gin.Context) {
 
 	c.HTML(http.StatusOK, "blog-post.tmpl", gin.H{
 		"title":      b.Title,
+		"subTitle":   b.SubTitle,
 		"create":     b.CreateDatetime.Format("2006-01-02 15:04:05"),
 		"update":     b.UpdateDatetime.Format("2006-01-02 15:04:05"),
 		"markdown":   markdown.MdToHtml(b.Content),
