@@ -9,6 +9,8 @@ simple devlog project
 
 # markdown rule
 
-' ``` 코드 블럭  ``` '
-' ``a link TEXT '
-' ``img src w=100 h=100 '
+\`\`\` 코드 블럭  \`\`\`
+
+\`\`a link TEXT
+
+\`\`img src w=100 h=100
