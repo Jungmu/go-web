@@ -8,6 +8,8 @@ import (
 
 func Init(r *gin.Engine) {
 	r.Static("/assets", "./assets")
+	r.StaticFile("/robots.txt", "./assets/robots.txt")
+	r.StaticFile("/googlef7a4061446ba6717.html", "./assets/googlef7a4061446ba6717.html")
 	r.LoadHTMLGlob("templates/*")
 	r.GET("", route.Index)
 

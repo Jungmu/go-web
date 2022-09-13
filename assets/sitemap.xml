@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+		<!--	created with www.mysitemapgenerator.com	-->
+		<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+	<loc>https://devlog.jungmu.dev/</loc>
+	<lastmod>2022-09-13T11:04:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://devlog.jungmu.dev/blog</loc>
+	<lastmod>2022-09-13T11:04:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://devlog.jungmu.dev/blog/post</loc>
+	<lastmod>2022-09-13T11:04:46+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://devlog.jungmu.dev/blog/article/linux%20socket%20limit</loc>
+	<lastmod>2022-09-13T11:04:46+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://devlog.jungmu.dev/blog?tag=linux</loc>
+	<lastmod>2022-09-13T11:04:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://devlog.jungmu.dev/blog?tag=%20socket</loc>
+	<lastmod>2022-09-13T11:04:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://devlog.jungmu.dev/blog?tag=%20file</loc>
+	<lastmod>2022-09-13T11:04:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://devlog.jungmu.dev/blog?tag=%20limit</loc>
+	<lastmod>2022-09-13T11:04:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://devlog.jungmu.dev/blog?tag=%20os</loc>
+	<lastmod>2022-09-13T11:04:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://devlog.jungmu.dev/blog/article/Let%e2%80%99s%20Encrypt%20-%20wild%20card%20%ec%9d%b8%ec%a6%9d%ec%84%9c%20%eb%b0%9c%ea%b8%89%ed%95%98%ea%b8%b0</loc>
+	<lastmod>2022-09-13T11:04:46+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://devlog.jungmu.dev/blog?tag=ssl</loc>
+	<lastmod>2022-09-13T11:04:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://devlog.jungmu.dev/blog?tag=tls</loc>
+	<lastmod>2022-09-13T11:04:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://devlog.jungmu.dev/blog?tag=encrypt</loc>
+	<lastmod>2022-09-13T11:04:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://devlog.jungmu.dev/blog/article/devlog</loc>
+	<lastmod>2022-09-13T11:04:46+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://devlog.jungmu.dev/blog?tag=devlog</loc>
+	<lastmod>2022-09-13T11:04:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://devlog.jungmu.dev/blog/edit/linux%20socket%20limit</loc>
+	<lastmod>2022-09-13T11:04:48+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://devlog.jungmu.dev/blog/edit/Let%e2%80%99s%20Encrypt%20-%20wild%20card%20%ec%9d%b8%ec%a6%9d%ec%84%9c%20%eb%b0%9c%ea%b8%89%ed%95%98%ea%b8%b0</loc>
+	<lastmod>2022-09-13T11:04:51+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://devlog.jungmu.dev/blog/edit/devlog</loc>
+	<lastmod>2022-09-13T11:04:52+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+</urlset>
