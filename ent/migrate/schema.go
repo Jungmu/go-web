@@ -47,12 +47,39 @@ var (
 			},
 		},
 	}
+	// CommentsColumns holds the columns for the "comments" table.
+	CommentsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "password", Type: field.TypeString},
+		{Name: "content", Type: field.TypeString},
+		{Name: "comment_id", Type: field.TypeInt64, Default: 0},
+		{Name: "update_datetime", Type: field.TypeTime},
+		{Name: "create_datetime", Type: field.TypeTime},
+		{Name: "blog_comments", Type: field.TypeInt64, Nullable: true},
+	}
+	// CommentsTable holds the schema information for the "comments" table.
+	CommentsTable = &schema.Table{
+		Name:       "comments",
+		Columns:    CommentsColumns,
+		PrimaryKey: []*schema.Column{CommentsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "comments_blogs_comments",
+				Columns:    []*schema.Column{CommentsColumns[7]},
+				RefColumns: []*schema.Column{BlogsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		BlogsTable,
 		BlogLogsTable,
+		CommentsTable,
 	}
 )
 
 func init() {
+	CommentsTable.ForeignKeys[0].RefTable = BlogsTable
 }

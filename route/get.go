@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jungmu/go-web/db"
 	blogDB "github.com/jungmu/go-web/db/blog"
+	"github.com/jungmu/go-web/ent"
 	"github.com/jungmu/go-web/ent/blog"
 	"github.com/jungmu/go-web/markdown"
 	"github.com/jungmu/go-web/xconst"
@@ -14,6 +15,30 @@ import (
 
 type reqGet struct {
 	Title string `uri:"title"`
+}
+
+type comment struct {
+	ID        int64
+	Name      string
+	Content   string
+	Update    string
+	Create    string
+	CommentID int64
+}
+
+func newComment(entComments []*ent.Comment) (comments []comment) {
+	for _, ent := range entComments {
+		c := comment{
+			ID:        ent.ID,
+			Name:      ent.Name,
+			Content:   ent.Content,
+			Update:    ent.UpdateDatetime.Format("2006-01-02 15:04:05"),
+			Create:    ent.UpdateDatetime.Format("2006-01-02 15:04:05"),
+			CommentID: ent.CommentID,
+		}
+		comments = append(comments, c)
+	}
+	return
 }
 
 func Get(c *gin.Context) {
@@ -29,6 +54,7 @@ func Get(c *gin.Context) {
 
 	b, err := db.Client().Blog.Query().
 		Where(blog.Title(r.Title)).
+		WithComments().
 		Only(c)
 
 	if err != nil {
@@ -58,5 +84,6 @@ func Get(c *gin.Context) {
 		"markdown":   markdown.MdToHtml(b.Content),
 		"viewCount":  viewCount,
 		"visitCount": visitCount,
+		"comments":   newComment(b.Edges.Comments),
 	})
 }

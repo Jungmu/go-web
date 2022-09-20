@@ -8,31 +8,29 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-// Blog holds the schema definition for the Blog entity.
-type Blog struct {
+// Comment holds the schema definition for the Comment entity.
+type Comment struct {
 	ent.Schema
 }
 
-// Fields of the Blog.
-func (Blog) Fields() []ent.Field {
+// Fields of the Comment.
+func (Comment) Fields() []ent.Field {
 
 	return []ent.Field{
 		field.Int64("id"),
 
-		field.String("title").
-			Comment("title").
-			Unique(),
+		field.String("name").
+			Comment("name"),
 
-		field.String("sub_title").
-			Default("").
-			Comment("sub_title"),
-
-		field.String("tags").
-			Default("").
-			Comment("tags"),
+		field.String("password").
+			Comment("password"),
 
 		field.String("content").
 			Comment("content"),
+
+		field.Int64("comment_id").
+			Comment("comment_id").
+			Default(0),
 
 		field.Time("update_datetime").
 			Comment("update_datetime").
@@ -45,9 +43,11 @@ func (Blog) Fields() []ent.Field {
 	}
 }
 
-// Edges of the Blog.
-func (Blog) Edges() []ent.Edge {
+// Edges of the Comment.
+func (Comment) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("comments", Comment.Type),
+		edge.From("owner", Blog.Type).
+			Ref("comments").
+			Unique(),
 	}
 }

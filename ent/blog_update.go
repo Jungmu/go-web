@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/jungmu/go-web/ent/blog"
+	"github.com/jungmu/go-web/ent/comment"
 	"github.com/jungmu/go-web/ent/predicate"
 )
 
@@ -88,9 +89,45 @@ func (bu *BlogUpdate) SetNillableCreateDatetime(t *time.Time) *BlogUpdate {
 	return bu
 }
 
+// AddCommentIDs adds the "comments" edge to the Comment entity by IDs.
+func (bu *BlogUpdate) AddCommentIDs(ids ...int64) *BlogUpdate {
+	bu.mutation.AddCommentIDs(ids...)
+	return bu
+}
+
+// AddComments adds the "comments" edges to the Comment entity.
+func (bu *BlogUpdate) AddComments(c ...*Comment) *BlogUpdate {
+	ids := make([]int64, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return bu.AddCommentIDs(ids...)
+}
+
 // Mutation returns the BlogMutation object of the builder.
 func (bu *BlogUpdate) Mutation() *BlogMutation {
 	return bu.mutation
+}
+
+// ClearComments clears all "comments" edges to the Comment entity.
+func (bu *BlogUpdate) ClearComments() *BlogUpdate {
+	bu.mutation.ClearComments()
+	return bu
+}
+
+// RemoveCommentIDs removes the "comments" edge to Comment entities by IDs.
+func (bu *BlogUpdate) RemoveCommentIDs(ids ...int64) *BlogUpdate {
+	bu.mutation.RemoveCommentIDs(ids...)
+	return bu
+}
+
+// RemoveComments removes "comments" edges to Comment entities.
+func (bu *BlogUpdate) RemoveComments(c ...*Comment) *BlogUpdate {
+	ids := make([]int64, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return bu.RemoveCommentIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -216,6 +253,60 @@ func (bu *BlogUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: blog.FieldCreateDatetime,
 		})
 	}
+	if bu.mutation.CommentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   blog.CommentsTable,
+			Columns: []string{blog.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: comment.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := bu.mutation.RemovedCommentsIDs(); len(nodes) > 0 && !bu.mutation.CommentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   blog.CommentsTable,
+			Columns: []string{blog.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: comment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := bu.mutation.CommentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   blog.CommentsTable,
+			Columns: []string{blog.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: comment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, bu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{blog.Label}
@@ -295,9 +386,45 @@ func (buo *BlogUpdateOne) SetNillableCreateDatetime(t *time.Time) *BlogUpdateOne
 	return buo
 }
 
+// AddCommentIDs adds the "comments" edge to the Comment entity by IDs.
+func (buo *BlogUpdateOne) AddCommentIDs(ids ...int64) *BlogUpdateOne {
+	buo.mutation.AddCommentIDs(ids...)
+	return buo
+}
+
+// AddComments adds the "comments" edges to the Comment entity.
+func (buo *BlogUpdateOne) AddComments(c ...*Comment) *BlogUpdateOne {
+	ids := make([]int64, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return buo.AddCommentIDs(ids...)
+}
+
 // Mutation returns the BlogMutation object of the builder.
 func (buo *BlogUpdateOne) Mutation() *BlogMutation {
 	return buo.mutation
+}
+
+// ClearComments clears all "comments" edges to the Comment entity.
+func (buo *BlogUpdateOne) ClearComments() *BlogUpdateOne {
+	buo.mutation.ClearComments()
+	return buo
+}
+
+// RemoveCommentIDs removes the "comments" edge to Comment entities by IDs.
+func (buo *BlogUpdateOne) RemoveCommentIDs(ids ...int64) *BlogUpdateOne {
+	buo.mutation.RemoveCommentIDs(ids...)
+	return buo
+}
+
+// RemoveComments removes "comments" edges to Comment entities.
+func (buo *BlogUpdateOne) RemoveComments(c ...*Comment) *BlogUpdateOne {
+	ids := make([]int64, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return buo.RemoveCommentIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -452,6 +579,60 @@ func (buo *BlogUpdateOne) sqlSave(ctx context.Context) (_node *Blog, err error) 
 			Value:  value,
 			Column: blog.FieldCreateDatetime,
 		})
+	}
+	if buo.mutation.CommentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   blog.CommentsTable,
+			Columns: []string{blog.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: comment.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := buo.mutation.RemovedCommentsIDs(); len(nodes) > 0 && !buo.mutation.CommentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   blog.CommentsTable,
+			Columns: []string{blog.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: comment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := buo.mutation.CommentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   blog.CommentsTable,
+			Columns: []string{blog.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: comment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Blog{config: buo.config}
 	_spec.Assign = _node.assignValues

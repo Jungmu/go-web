@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -12,19 +13,21 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/jungmu/go-web/ent/blog"
+	"github.com/jungmu/go-web/ent/comment"
 	"github.com/jungmu/go-web/ent/predicate"
 )
 
 // BlogQuery is the builder for querying Blog entities.
 type BlogQuery struct {
 	config
-	limit      *int
-	offset     *int
-	unique     *bool
-	order      []OrderFunc
-	fields     []string
-	predicates []predicate.Blog
-	modifiers  []func(*sql.Selector)
+	limit        *int
+	offset       *int
+	unique       *bool
+	order        []OrderFunc
+	fields       []string
+	predicates   []predicate.Blog
+	withComments *CommentQuery
+	modifiers    []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -59,6 +62,28 @@ func (bq *BlogQuery) Unique(unique bool) *BlogQuery {
 func (bq *BlogQuery) Order(o ...OrderFunc) *BlogQuery {
 	bq.order = append(bq.order, o...)
 	return bq
+}
+
+// QueryComments chains the current query on the "comments" edge.
+func (bq *BlogQuery) QueryComments() *CommentQuery {
+	query := &CommentQuery{config: bq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := bq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := bq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(blog.Table, blog.FieldID, selector),
+			sqlgraph.To(comment.Table, comment.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, blog.CommentsTable, blog.CommentsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(bq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Blog entity from the query.
@@ -237,16 +262,28 @@ func (bq *BlogQuery) Clone() *BlogQuery {
 		return nil
 	}
 	return &BlogQuery{
-		config:     bq.config,
-		limit:      bq.limit,
-		offset:     bq.offset,
-		order:      append([]OrderFunc{}, bq.order...),
-		predicates: append([]predicate.Blog{}, bq.predicates...),
+		config:       bq.config,
+		limit:        bq.limit,
+		offset:       bq.offset,
+		order:        append([]OrderFunc{}, bq.order...),
+		predicates:   append([]predicate.Blog{}, bq.predicates...),
+		withComments: bq.withComments.Clone(),
 		// clone intermediate query.
 		sql:    bq.sql.Clone(),
 		path:   bq.path,
 		unique: bq.unique,
 	}
+}
+
+// WithComments tells the query-builder to eager-load the nodes that are connected to
+// the "comments" edge. The optional arguments are used to configure the query builder of the edge.
+func (bq *BlogQuery) WithComments(opts ...func(*CommentQuery)) *BlogQuery {
+	query := &CommentQuery{config: bq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	bq.withComments = query
+	return bq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -315,8 +352,11 @@ func (bq *BlogQuery) prepareQuery(ctx context.Context) error {
 
 func (bq *BlogQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Blog, error) {
 	var (
-		nodes = []*Blog{}
-		_spec = bq.querySpec()
+		nodes       = []*Blog{}
+		_spec       = bq.querySpec()
+		loadedTypes = [1]bool{
+			bq.withComments != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
 		return (*Blog).scanValues(nil, columns)
@@ -324,6 +364,7 @@ func (bq *BlogQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Blog, e
 	_spec.Assign = func(columns []string, values []interface{}) error {
 		node := &Blog{config: bq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	if len(bq.modifiers) > 0 {
@@ -338,7 +379,46 @@ func (bq *BlogQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Blog, e
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := bq.withComments; query != nil {
+		if err := bq.loadComments(ctx, query, nodes,
+			func(n *Blog) { n.Edges.Comments = []*Comment{} },
+			func(n *Blog, e *Comment) { n.Edges.Comments = append(n.Edges.Comments, e) }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (bq *BlogQuery) loadComments(ctx context.Context, query *CommentQuery, nodes []*Blog, init func(*Blog), assign func(*Blog, *Comment)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*Blog)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.Comment(func(s *sql.Selector) {
+		s.Where(sql.InValues(blog.CommentsColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.blog_comments
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "blog_comments" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "blog_comments" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
 }
 
 func (bq *BlogQuery) sqlCount(ctx context.Context) (int, error) {

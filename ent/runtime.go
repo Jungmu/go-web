@@ -7,6 +7,7 @@ import (
 
 	"github.com/jungmu/go-web/ent/blog"
 	"github.com/jungmu/go-web/ent/bloglog"
+	"github.com/jungmu/go-web/ent/comment"
 	"github.com/jungmu/go-web/ent/schema"
 )
 
@@ -40,4 +41,20 @@ func init() {
 	bloglogDescCreateDatetime := bloglogFields[6].Descriptor()
 	// bloglog.DefaultCreateDatetime holds the default value on creation for the create_datetime field.
 	bloglog.DefaultCreateDatetime = bloglogDescCreateDatetime.Default.(func() time.Time)
+	commentFields := schema.Comment{}.Fields()
+	_ = commentFields
+	// commentDescCommentID is the schema descriptor for comment_id field.
+	commentDescCommentID := commentFields[4].Descriptor()
+	// comment.DefaultCommentID holds the default value on creation for the comment_id field.
+	comment.DefaultCommentID = commentDescCommentID.Default.(int64)
+	// commentDescUpdateDatetime is the schema descriptor for update_datetime field.
+	commentDescUpdateDatetime := commentFields[5].Descriptor()
+	// comment.DefaultUpdateDatetime holds the default value on creation for the update_datetime field.
+	comment.DefaultUpdateDatetime = commentDescUpdateDatetime.Default.(func() time.Time)
+	// comment.UpdateDefaultUpdateDatetime holds the default value on update for the update_datetime field.
+	comment.UpdateDefaultUpdateDatetime = commentDescUpdateDatetime.UpdateDefault.(func() time.Time)
+	// commentDescCreateDatetime is the schema descriptor for create_datetime field.
+	commentDescCreateDatetime := commentFields[6].Descriptor()
+	// comment.DefaultCreateDatetime holds the default value on creation for the create_datetime field.
+	comment.DefaultCreateDatetime = commentDescCreateDatetime.Default.(func() time.Time)
 }

@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/jungmu/go-web/ent/blog"
+	"github.com/jungmu/go-web/ent/comment"
 )
 
 // BlogCreate is the builder for creating a Blog entity.
@@ -94,6 +95,21 @@ func (bc *BlogCreate) SetNillableCreateDatetime(t *time.Time) *BlogCreate {
 func (bc *BlogCreate) SetID(i int64) *BlogCreate {
 	bc.mutation.SetID(i)
 	return bc
+}
+
+// AddCommentIDs adds the "comments" edge to the Comment entity by IDs.
+func (bc *BlogCreate) AddCommentIDs(ids ...int64) *BlogCreate {
+	bc.mutation.AddCommentIDs(ids...)
+	return bc
+}
+
+// AddComments adds the "comments" edges to the Comment entity.
+func (bc *BlogCreate) AddComments(c ...*Comment) *BlogCreate {
+	ids := make([]int64, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return bc.AddCommentIDs(ids...)
 }
 
 // Mutation returns the BlogMutation object of the builder.
@@ -292,6 +308,25 @@ func (bc *BlogCreate) createSpec() (*Blog, *sqlgraph.CreateSpec) {
 			Column: blog.FieldCreateDatetime,
 		})
 		_node.CreateDatetime = value
+	}
+	if nodes := bc.mutation.CommentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   blog.CommentsTable,
+			Columns: []string{blog.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: comment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

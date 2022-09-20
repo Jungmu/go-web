@@ -11,3 +11,6 @@ type Blog func(*sql.Selector)
 
 // BlogLog is the predicate function for bloglog builders.
 type BlogLog func(*sql.Selector)
+
+// Comment is the predicate function for comment builders.
+type Comment func(*sql.Selector)

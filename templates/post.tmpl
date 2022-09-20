@@ -41,9 +41,8 @@
 
     axios
       .post(
-        "/blog/article/title",
+        "/blog/article/"+title,
         {
-          title: title,
           subTitle: subTitle,
           tags: tags,
           content: content,

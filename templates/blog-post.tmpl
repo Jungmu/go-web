@@ -15,19 +15,115 @@
   <meta name="og:image" content="https://devlog.jungmu.dev/assets/logo.PNG" />
 </head>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8659618338500304" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 <body>
   {{template "nav.tmpl"}}
+  {{$title := .title}}
+  {{$comments := .comments}}
   <div class="article">
     <p>update : {{.update}}</p>
     <p>create : {{.create}}</p>
     <p>view count : {{.viewCount}} / visit count : {{.visitCount}}</p>
     <div class="line"></div>
     {{.markdown}}
+    <br>
+    <div class="comments">
+      <div class="comment-list">
+        {{ range $comments }}
+        {{ $rootComment := . }}
+        {{ if .CommentID }}
+        {{ else }}
+        <div class="comment">
+          <p id="name">{{.Name}}</p>
+          <p class="comment-list-content" id="content">{{.Content}}</p>
+          <p id="date-time">update : {{.Update}}, create : {{.Create}}</p>
+
+          {{ range $comments }}
+          {{ if eq .CommentID $rootComment.ID }}
+          <div class="comment inner-comment">
+            <p id="name">{{.Name}}</p>
+            <p class="comment-list-content" id="content">{{.Content}}</p>
+            <p id="date-time">update : {{.Update}}, create : {{.Create}}</p>
+          </div>
+          {{ else }}
+          {{ end }}
+          {{ end }}
+
+          <button onclick="toggleComment('{{.ID}}')"><img src="/assets/comment_plus_icon.png" id="comment-plus-{{.ID}}"></button>
+          <div class="comment-post" id="{{.ID}}" style="display: none;">
+            <div class="comment-auth">
+              <label for="comment-name-{{.ID}}">name</label>
+              <input type="text" id="comment-name-{{.ID}}">
+              <label for="comment-password-{{.ID}}">password</label>
+              <input type="password" id="comment-password-{{.ID}}">
+            </div>
+            <div class="comment-content">
+              <label for="comment-content-{{.ID}}">content</label>
+              <textarea name="comment-content" id="comment-content-{{.ID}}" cols="20" rows="5"></textarea>
+            </div>
+            <button class="comment-summit" onclick="post('{{$title}}', '{{.ID}}')">summit</button>
+          </div>
+          
+        </div>
+        {{ end }}
+        {{ end }}
+      </div>
+      <div class="comment-post">
+        <div class="comment-auth">
+          <label for="comment-name-0">name</label>
+          <input type="text" id="comment-name-0">
+          <label for="comment-password-0">password</label>
+          <input type="password" id="comment-password-0">
+        </div>
+        <div class="comment-content">
+          <label for="comment-content-0">content</label>
+          <textarea name="comment-content" id="comment-content-0" cols="20" rows="5"></textarea>
+        </div>
+        <button class="comment-summit" onclick="post('{{$title}}', '0')">summit</button>
+      </div>
+    </div>
   </div>
-  <p class="edit"><a href="/blog/edit/{{.title}}">edit article</a></p>
+
+  <p class="edit"><a href="/blog/edit/{{$title}}">edit article</a></p>
 </body>
 {{template "footer.tmpl"}}
 
 </html>
+<script>
+  function toggleComment(id) {
+    var el = document.getElementById(id);
+    if (el.style.display == 'none') {
+      el.style.display = 'flex';
+    } else {
+      el.style.display = 'none';
+    }
+  }
+
+  function post(title, id) {
+    var name = document.querySelector("#comment-name-" + id).value;
+    var password = document.querySelector("#comment-password-" + id).value;
+    var content = document.querySelector("#comment-content-" + id).value;
+
+    console.log(id)
+
+    axios
+      .post(
+        "/blog/comment/" + title,
+        {
+          name: name,
+          password: password,
+          content: content,
+          commentID: Number(id)
+        },
+      )
+      .then(function (response) {
+        alert("post article.");
+        location.href = "/blog/article/" + title
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+</script>
 {{template "style.tmpl"}}

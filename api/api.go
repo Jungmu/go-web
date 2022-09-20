@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jungmu/go-web/api/blog"
+	"github.com/jungmu/go-web/api/comment"
 	"github.com/jungmu/go-web/route"
 )
 
@@ -22,5 +23,7 @@ func Init(r *gin.Engine) {
 		blogGroup.GET("edit/:title", route.Edit)
 		blogGroup.PUT("article/:title", blog.Edit)
 		blogGroup.POST("article/:title", blog.Post)
+
+		blogGroup.POST("comment/:title", comment.Post)
 	}
 }

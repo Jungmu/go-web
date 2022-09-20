@@ -23,8 +23,17 @@ const (
 	FieldUpdateDatetime = "update_datetime"
 	// FieldCreateDatetime holds the string denoting the create_datetime field in the database.
 	FieldCreateDatetime = "create_datetime"
+	// EdgeComments holds the string denoting the comments edge name in mutations.
+	EdgeComments = "comments"
 	// Table holds the table name of the blog in the database.
 	Table = "blogs"
+	// CommentsTable is the table that holds the comments relation/edge.
+	CommentsTable = "comments"
+	// CommentsInverseTable is the table name for the Comment entity.
+	// It exists in this package in order to avoid circular dependency with the "comment" package.
+	CommentsInverseTable = "comments"
+	// CommentsColumn is the table column denoting the comments relation/edge.
+	CommentsColumn = "blog_comments"
 )
 
 // Columns holds all SQL columns for blog fields.

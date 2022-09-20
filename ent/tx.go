@@ -16,6 +16,8 @@ type Tx struct {
 	Blog *BlogClient
 	// BlogLog is the client for interacting with the BlogLog builders.
 	BlogLog *BlogLogClient
+	// Comment is the client for interacting with the Comment builders.
+	Comment *CommentClient
 
 	// lazily loaded.
 	client     *Client
@@ -153,6 +155,7 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Blog = NewBlogClient(tx.config)
 	tx.BlogLog = NewBlogLogClient(tx.config)
+	tx.Comment = NewCommentClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
