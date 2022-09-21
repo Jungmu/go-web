@@ -6,4 +6,5 @@ const (
 	ReasonView        = "view"
 	ReasonIndex       = "index"
 	ReasonPostComment = "postComment"
+	ReasonEditComment = "editComment"
 )
