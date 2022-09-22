@@ -21,36 +21,36 @@ func MdToHtml(markdown string) (result template.HTML) {
 }
 
 func parse(str string, openCodeBlock bool) (string, bool) {
-	str = strings.TrimSpace(str)
+	trimStr := strings.TrimSpace(str)
 
 	if openCodeBlock {
-		if strings.HasSuffix(str, "```") {
-			str = strings.ReplaceAll(str, "```", "</code>")
+		if strings.HasSuffix(trimStr, "```") {
+			str = strings.ReplaceAll(str, "```", "</pre>")
 			openCodeBlock = false
 		} else {
 			str = fmt.Sprintf("<p>%s</p>", str)
 		}
 	} else {
-		if strings.HasPrefix(str, "```") {
-			if strings.HasSuffix(str, "```") && len(str) > len("```") {
+		if strings.HasPrefix(trimStr, "```") {
+			if strings.HasSuffix(trimStr, "```") && len(trimStr) > len("```") {
 				str = strings.ReplaceAll(str, "```", "")
-				str = fmt.Sprintf("<code>%s</code>", str)
+				str = fmt.Sprintf("<pre>%s</pre>", str)
 			} else {
 				str = strings.ReplaceAll(str, "```", "")
-				str = fmt.Sprintf("<code>%s<br>", str)
+				str = fmt.Sprintf("<pre>%s<br>", str)
 				openCodeBlock = true
 			}
-		} else if strings.HasPrefix(str, "#") {
-			splitStr := strings.Split(str, " ")
+		} else if strings.HasPrefix(trimStr, "#") {
+			splitStr := strings.Split(trimStr, " ")
 			prefix := splitStr[0]
 			prefixCount := len(prefix)
 			str = fmt.Sprintf("<h%d>%s</h%d>", prefixCount, strings.Join(splitStr[1:], " "), prefixCount)
-		} else if strings.HasPrefix(str, "``a") {
+		} else if strings.HasPrefix(trimStr, "``a") {
 			splitStr := strings.Split(str, " ")
 			link := splitStr[1]
 			text := strings.Join(splitStr[2:], " ")
 			str = fmt.Sprintf("<a href='%s' target='_blank' rel='noopener noreferrer'>%s</a>", link, text)
-		} else if strings.HasPrefix(str, "``img") {
+		} else if strings.HasPrefix(trimStr, "``img") {
 			splitStr := strings.Split(str, " ")
 			src := splitStr[1]
 			options := splitStr[2:]
@@ -64,6 +64,9 @@ func parse(str string, openCodeBlock bool) (string, bool) {
 			}
 			str = str + ">"
 		} else {
+			if len(str) == 0 {
+				str = "<br>"
+			}
 			str = fmt.Sprintf("<p>%s</p>", str)
 		}
 	}

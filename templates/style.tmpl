@@ -48,13 +48,18 @@
     background-color: #ddd;
     justify-content: left;
   }
-  code {
+  pre {
     background-color: #333;
     border: 1px solid #555;
     display: block;
     padding: 20px;
     margin: 10px;
     color: aliceblue;
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
   }
   h1 {
     margin: 1%;
@@ -182,5 +187,11 @@
     margin: 25px 0 7px 0;
   }
 
+  .chat {
+    display: flex;
+    flex-direction: column;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
 
 </style>
