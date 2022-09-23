@@ -1,8 +1,10 @@
 package route
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jungmu/go-web/db"
@@ -10,6 +12,7 @@ import (
 	"github.com/jungmu/go-web/ent"
 	"github.com/jungmu/go-web/ent/blog"
 	"github.com/jungmu/go-web/markdown"
+	"github.com/jungmu/go-web/redis"
 	"github.com/jungmu/go-web/xconst"
 )
 
@@ -76,6 +79,11 @@ func Get(c *gin.Context) {
 		log.Panicln(err)
 	}
 
+	chatList, err := redis.GetLastChatList()
+	if err != nil {
+		chatList = []string{}
+	}
+
 	c.HTML(http.StatusOK, "blog-post.tmpl", gin.H{
 		"title":      b.Title,
 		"subTitle":   b.SubTitle,
@@ -85,5 +93,8 @@ func Get(c *gin.Context) {
 		"viewCount":  viewCount,
 		"visitCount": visitCount,
 		"comments":   newComment(b.Edges.Comments),
+		"ip":         c.ClientIP(),
+		"chat":       chatList,
+		"randomName": fmt.Sprintf("guest-%d", time.Now().UnixMilli()),
 	})
 }

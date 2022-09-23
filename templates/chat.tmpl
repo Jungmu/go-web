@@ -1,0 +1,89 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>{{.title}}</title>
+    <meta http-equiv="Email" content="jungmu@jungmu.dev" />
+    <meta name="keywords" content="golang, dev, programming, program, computer, code, coding, linux, ssl, tls, web" />
+    <meta name="author" content="Jungmu" />
+    <meta name="description" content="{{.title}}" />
+    <meta name="og:site_name" content="jungmu's devlog" />
+    <meta name="og:title" content="{{.title}}" />
+    <meta name="og:description" content="{{.title}}" />
+    <meta name="og:type" content="website" />
+    <meta name="og:url" content="https://devlog.jungmu.dev/blog" />
+    <meta name="og:image" content="https://devlog.jungmu.dev/assets/logo.PNG" />
+</head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8659618338500304" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<body>
+    {{template "nav.tmpl"}}
+    <div class="chat">
+        <div id="chat">
+            {{ range .chat }}
+            <div>{{.}}</div>
+            {{end}}
+        </div>
+        <p>your ip : {{.ip}}</p>
+        <div id="chat-input-group">
+            <label for="name">name</label>
+            <input type="text" id="name" placeholder="name" value="{{.randomName}}">
+            <input type="text" id="input" placeholder="input text" onkeyup="enterkey()">
+        </div>
+        <button onclick="sendChat()">send</button>
+    </div>
+</body>
+{{template "footer.tmpl"}}
+
+</html>
+<script>
+    var conn;
+
+    window.onload = function () {
+        var name = document.querySelector("#name");
+
+        if (window["WebSocket"]) {
+            conn = new WebSocket("wss://" + document.location.host + "/ws/chat");
+            conn.onclose = function (evt) {
+                var item = document.createElement("div");
+                item.innerHTML = "<b>Connection closed.</b>";
+                appendChat(item);
+            };
+            conn.onmessage = function (evt) {
+                var item = document.createElement("div");
+                item.innerHTML = evt.data;                
+                appendChat(item);
+                appendChat(document.createElement("br"));
+            };
+        } else {
+            var item = document.createElement("div");
+            item.innerHTML = "<b>Your browser does not support WebSockets.</b>";
+            appendChat(item);
+        }
+
+        chat.scrollTop = chat.scrollHeight
+    };
+
+    function enterkey() {
+        if (window.event.keyCode == 13) {
+            sendChat()
+        }
+    }
+
+    function appendChat(item) {
+        var chat = document.querySelector("#chat");
+        chat.appendChild(item);
+        chat.scrollTop = chat.scrollHeight
+    }
+
+    function sendChat() {
+        var input = document.querySelector("#input");
+        var name = document.querySelector("#name");
+
+        conn.send(name.value + " : " + input.value);
+        input.value = "";
+    }
+
+</script>
+{{template "style.tmpl"}}

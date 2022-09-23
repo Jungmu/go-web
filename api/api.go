@@ -5,6 +5,8 @@ import (
 	"github.com/jungmu/go-web/api/ai"
 	"github.com/jungmu/go-web/api/blog"
 	"github.com/jungmu/go-web/api/comment"
+	"github.com/jungmu/go-web/api/websocket"
+	"github.com/jungmu/go-web/chat"
 	"github.com/jungmu/go-web/route"
 )
 
@@ -26,10 +28,20 @@ func Init(r *gin.Engine) {
 		blogGroup.POST("article/:title", blog.Post)
 
 		blogGroup.POST("comment/:title", comment.Post)
+
+		blogGroup.GET("chat", route.Chat)
 	}
+
 	aiGroup := r.Group("ai")
 	{
-		aiGroup.GET("chat", route.Chat)
+		aiGroup.GET("chat", route.AIChat)
 		aiGroup.POST("chat", ai.Chat)
+	}
+
+	websocketGroup := r.Group("ws")
+	{
+		hub := chat.NewHub()
+		go hub.Run()
+		websocketGroup.Any("chat", func(c *gin.Context) { websocket.Chat(hub, c) })
 	}
 }

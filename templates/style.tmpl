@@ -3,26 +3,32 @@
     color: inherit;
     text-decoration: none;
   }
+
   .posts a:visited {
     color: inherit;
     text-decoration: none;
   }
+
   .posts a:hover {
     color: inherit;
     text-decoration: none;
   }
+
   nav a:link {
     color: inherit;
     text-decoration: none;
   }
+
   nav a:visited {
     color: inherit;
     text-decoration: none;
   }
+
   nav a:hover {
     color: inherit;
     text-decoration: none;
   }
+
   nav {
     display: flex;
     flex-direction: row;
@@ -30,12 +36,14 @@
     margin: 1%;
     justify-content: space-between;
   }
+
   .posts {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
   }
+
   .post {
     display: flex;
     flex-direction: column;
@@ -48,6 +56,7 @@
     background-color: #ddd;
     justify-content: left;
   }
+
   pre {
     background-color: #333;
     border: 1px solid #555;
@@ -55,43 +64,56 @@
     padding: 20px;
     margin: 10px;
     color: aliceblue;
-    white-space: pre-wrap;       /* Since CSS 2.1 */
-    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-    white-space: -pre-wrap;      /* Opera 4-6 */
-    white-space: -o-pre-wrap;    /* Opera 7 */
-    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    white-space: pre-wrap;
+    /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;
+    /* Mozilla, since 1999 */
+    white-space: -pre-wrap;
+    /* Opera 4-6 */
+    white-space: -o-pre-wrap;
+    /* Opera 7 */
+    word-wrap: break-word;
+    /* Internet Explorer 5.5+ */
   }
+
   h1 {
     margin: 1%;
     padding: 1%;
   }
+
   .article {
     padding: 0 3%;
     margin: 0 auto;
     max-width: 1080px;
   }
+
   .editor {
     display: flex;
     flex-direction: column;
     max-width: 1080px;
     margin: 0 auto;
   }
+
   .editor-input-group {
     display: flex;
     flex-direction: column;
   }
+
   label {
     padding: 0 5px;
     margin: 0 5px;
   }
+
   input {
     padding: 5px;
     margin: 5px;
   }
+
   button {
     padding: 5px;
     margin: 5px;
   }
+
   textarea {
     padding: 5px;
     margin: 5px;
@@ -103,14 +125,17 @@
     padding: 0 3%;
     margin: 0 3%;
   }
+
   .edit a:link {
     color: inherit;
     text-decoration: none;
   }
+
   .edit a:visited {
     color: inherit;
     text-decoration: none;
   }
+
   .edit a:hover {
     color: inherit;
     text-decoration: none;
@@ -121,6 +146,7 @@
     margin: 0 3%;
     text-align: right;
   }
+
   .total-visit {
     padding: 0 3%;
     margin: 0 3%;
@@ -136,14 +162,15 @@
     padding: 3%;
     margin: 3%;
   }
-  .comments{
-   display: flex; 
-   flex-direction: column;
+
+  .comments {
+    display: flex;
+    flex-direction: column;
   }
 
   .comment {
     padding: 5px 20px;
-    margin:10px;
+    margin: 10px;
     background-color: #f0f0f0;
     border-radius: 10px;
   }
@@ -167,18 +194,18 @@
 
   .comment-post {
     padding: 5px 20px;
-    display: flex; 
+    display: flex;
     background-color: #ddd;
     border-radius: 10px;
   }
 
-  .comment-auth{
-    display: flex; 
+  .comment-auth {
+    display: flex;
     flex-direction: column;
   }
 
   .comment-content {
-    display: flex; 
+    display: flex;
     flex: 1;
     flex-direction: column;
   }
@@ -194,4 +221,34 @@
     margin: 0 auto;
   }
 
+  #chat-input-group {
+    display: flex;
+    align-items: center
+  }
+
+  #chat-input-group input {
+    flex-basis: 100px;
+  }
+
+  #chat-input-group input#name {
+    flex-shrink: 0;
+    flex-grow: 1;
+  }
+
+  #chat-input-group input#input {
+    flex-grow: 9;
+  }
+
+  #chat {
+    min-height: 300px;
+    max-height: 600px;
+    height: 100%;
+    background-color: #fcfcfc;
+    border: 1px solid #999;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
+    overflow: auto;
+    white-space: pre-line;
+  }
 </style>

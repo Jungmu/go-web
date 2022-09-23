@@ -15,6 +15,7 @@
   <meta name="og:image" content="https://devlog.jungmu.dev/assets/logo.PNG" />
 </head>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8659618338500304" crossorigin="anonymous"></script>
+
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 <body>
@@ -87,7 +88,7 @@
 
   <p class="edit"><a href="/blog/edit/{{$title}}">edit article</a></p>
 </body>
-{{template "footer.tmpl"}}
+{{template "footer.tmpl" .}}
 
 </html>
 <script>
