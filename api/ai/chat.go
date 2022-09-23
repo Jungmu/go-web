@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -88,7 +89,7 @@ func Chat(c *gin.Context) {
 		return
 	}
 	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", "Bearer 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")
+	req.Header.Add("Authorization", "Bearer "+os.Getenv("OPEN_API_KEY"))
 
 	res, err := client.Do(req)
 	if err != nil {
