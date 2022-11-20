@@ -38,10 +38,16 @@ func Init(r *gin.Engine) {
 		aiGroup.POST("chat", ai.Chat)
 	}
 
+	wedingGroup := r.Group("weding")
+	{
+		wedingGroup.GET("mobile", route.Mobile)
+	}
+
 	websocketGroup := r.Group("ws")
 	{
 		hub := chat.NewHub()
 		go hub.Run()
 		websocketGroup.Any("chat", func(c *gin.Context) { websocket.Chat(hub, c) })
 	}
+
 }
