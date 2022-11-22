@@ -16,6 +16,14 @@
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=331f2665dc7598d3dfac035e0ee0c491&libraries=services,clusterer,drawing"></script>
 
 <body id="body">
+    <audio id="player" autoplay="" loop="">
+        <source src="/assets/weding.mp3" type="audio/mp3">
+    </audio>
+    <div id="btn-player">
+        <button id="btn-bgm" onclick="playBGM()">
+            <img src="/assets/play.png" alt="" id="img-bgm">
+        </button>
+    </div>
     <div class="container">
         <div class="section">
             <hr class="line-1">
@@ -46,7 +54,9 @@
         </div>
         <div class="section">
             <p class="f16">같이 웃을 때 제일 행복한 저희가</p>
+            <br>
             <p class="f16">늘 함께 하고 싶어</p>
+            <br>
             <p class="f16">부부의 연을 맺습니다.</p>
             <br>
             <p class="f16">|</p>
@@ -202,49 +212,167 @@
             </div>
         </div>
         <div class="section">
-            <h2 class="f18 white-gray">오시는길</h2>
+            <hr class="line-1">
+            <h2 class="f18 title">오시는길</h2>
+            <hr class="line-1">
+            <div class="row margin-20">
+                <div class="col-7"></div>
+                <div class="col-40">
+                    <button class="button bold kakao" onclick="goKakaoMap()">카카오 지도 바로가기</button>
+                </div>
+                <div class="col-6"></div>
+                <div class="col-40">
+                    <button class="button bold" onclick="goNaverMap()">네이버 지도 바로가기</button>
+                </div>
+                <div class="col-7"></div>
+            </div>
             <div class="row">
-                <button class="button bold" onclick="goKakaoMap()">카카오 지도 바로가기</button>
             </div>
             <div class="map">
                 <div id="map" style="width:100%;height:300px;"></div>
             </div>
             <div class="row">
-                <p class="f16 bottom-margin">더 컨벤션 신사</p>
+                <p class="f16">더 컨벤션 신사</p>
+            </div>
+            <div class="row">
+                <p class="f14 bold bottom-margin">서울 강남구 강남대로 652</p>
             </div>
             <div class="row">                
                 <button class="button bold" onclick="showLocation()">상세 주소</button>
             </div>
         </div>
         <div class="section">
-            <hr class="dotted">
-            <h2 class="f18 white-gray">마음 전하실 곳</h2>
+            <hr class="dashed">
+            <h2 class="f14 bold">마음 전하실 곳</h2>
             <div class="row">
                 <div class="col-50">
-                    <div class="row"><p>신랑 정종선</p></div>
+                    <div class="row"><p class="f16"><span class="f14 bold">신랑</span> 정종선</p></div>
+                    <br>
                     <div class="row">
-                        <a class="phone" style="padding-right: 5px;" href="tel:010-9406-9452">
-                            <img class="phone" src="/assets/phone.png">
+                        <a href="tel:010-9406-9452">
+                            <button class="button contect bold-light">
+                                전화걸기
+                            </button>
                         </a>
                     </div>
                     <div class="row">
-                        <button class="button" onclick="account('110-338-177795', '정종선', '신한은행')">
+                        <button class="button contect bold-light" onclick="showAccountModal('신한은행','110-338-177795', '정종선')">
                         계좌번호
                         </button>
                     </div>
                     <div class="row">
                         <a href="https://qr.kakaopay.com/Ej7212E9a">
-                            <button class="button" style="background: #fef01b !important; margin-top: 5px;">
+                            <button class="button bold-light" style="background: #fef01b !important; margin-top: 5px;">
                                 카카오페이
                             </button>
                         </a>
                     </div>
                 </div>
                 <div class="col-50">
-                    <div class="row"><p>신부 김지안</p></div>
-                    <div class="row"><p>신부 김지안</p></div>
-                    <div class="row"><p>신부 김지안</p></div>
-                    <div class="row"><p>신부 김지안</p></div>
+                    <div class="row"><p class="f16"><span class="f14 bold">신부</span> 김지안</p></div>
+                    <br>
+                    <div class="row">
+                        <a href="tel:010-8893-0856">
+                            <button class="button contect bold-light">
+                                전화걸기
+                            </button>
+                        </a>
+                    </div>
+                    <div class="row">
+                        <button class="button contect bold-light" onclick="showAccountModal('우리은행','1002-548-129340','김지안')">
+                        계좌번호
+                        </button>
+                    </div>
+                    <div class="row">
+                        <a href="https://qr.kakaopay.com/Ej8Znj9US">
+                            <button class="button bold-light" style="background: #fef01b !important; margin-top: 5px;">
+                                카카오페이
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="empty"></div>
+
+
+            <div class="row">
+                <div class="col-50 right-border">
+                    <div class="row">
+                        <h2 class="f12">신랑 측 혼주</h2>
+                    </div>
+                    <div class="row">
+                        <div class="row">
+                            <p class="f16"><span class="f14 bold">어머니</span> 곽은숙</p>
+                        </div>
+                        <div class="row">
+                            <a href="tel:010-5152-9452">
+                                <button class="button contect bold-light">
+                                    전화걸기
+                                </button>
+                            </a>
+                        </div>
+                        <div class="row">
+                            <button class="button contect bold-light" onclick="showAccountModal('국민은행','204-21-1428-306', '곽은숙')">
+                            계좌번호
+                            </button>
+                        </div>  
+                    </div>
+                    <div class="row top-margin">
+                        <div class="row top-margin">
+                            <p class="f16"><span class="f14 bold">아버지</span> 정권성</p>
+                        </div>
+                        <div class="row">
+                            <a href="tel:010-3731-3357">
+                                <button class="button contect bold-light">
+                                    전화걸기
+                                </button>
+                            </a>
+                        </div>
+                        <div class="row">
+                            <button class="button contect bold-light" onclick="showAccountModal('새마을금고','8010-3731-33570', '정권성')">
+                            계좌번호
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-49">
+                    <div class="row">
+                        <div class="row">
+                            <h2 class="f12">신부 측 혼주</h2>
+                        </div>
+                        <div class="row">
+                            <p class="f16"><span class="f14 bold">어머니</span> 한미자</p>
+                        </div>
+                        <div class="row">
+                            <a href="tel:010-2065-0856">
+                                <button class="button contect bold-light">
+                                    전화걸기
+                                </button>
+                            </a>
+                        </div>
+                        <div class="row">
+                            <button class="button contect bold-light" onclick="showAccountModal('국민은행','856702-04-007792','한미자')">
+                            계좌번호
+                            </button>
+                        </div>  
+                    </div>
+                    <div class="row  top-margin">
+                        <div class="row top-margin">
+                            <p class="f16"><span class="f14 bold">아버지</span> 김병유</p>
+                        </div>
+                        <div class="row">
+                            <a href="tel:010-3710-0856">
+                                <button class="button contect bold-light">
+                                    전화걸기
+                                </button>
+                            </a>
+                        </div>
+                        <div class="row">
+                            <button class="button contect bold-light" onclick="showAccountModal('국민은행','856-21-0104-174','김병유')">
+                            계좌번호
+                            </button>
+                        </div> 
+                    </div>
                 </div>
             </div>
         </div>
@@ -275,6 +403,33 @@
             <div class="row flex-right">
                 <button class="right-button" onclick="hideLocation()">X</button>
             </div>
+        </div>
+    </div>
+    <div class="modal-account">
+        <div class="modal-account-body">
+            <div class="row">
+                <p id="account-bank" class="f16"></p>
+            </div>
+            <div class="row">
+                <p id="account" class="f16"></p>
+            </div>
+            <div class="row">
+                <p id="account-name" class="f16">예금주 : </p>
+            </div>
+            <div class="row">
+                <p id="copy-message" class="red f12">복사 되었습니다.</p>
+                <br>
+                <p></p>
+            </div>
+            <div class="row">
+                <div class="col-50">
+                    <button class="button" onclick="accountCopy()">복사하기</button>
+                </div>
+                <div class="col-50">
+                    <button class="button" onclick="hideAccountModal()">닫기</button>
+                </div>
+            </div>
+
         </div>
     </div>
 </body>
@@ -439,6 +594,33 @@
         window.location = "https://map.kakao.com/link/map/1050718692"
     }
 
+    function goNaverMap() {
+        window.location = "nmap://search?query=%eb%8d%94+%ec%bb%a8%eb%b2%a4%ec%85%98+%ec%8b%a0%ec%82%ac&appname=weding.jungmu.dev"
+    }
+
+    function initBGM(){
+        var player = document.getElementById('player');
+        let img = document.querySelector("#img-bgm");
+        if(player.paused){
+            img.src = "/assets/play.png"
+        } else {
+            img.src = "/assets/pause.png"
+        }
+    } 
+    initBGM();
+
+    function playBGM(){
+        var player = document.getElementById('player');
+        let img = document.querySelector("#img-bgm");
+        if(player.paused){
+            player.play();
+            img.src = "/assets/pause.png"
+        }else{
+            player.pause();
+            img.src = "/assets/play.png"
+        }
+    }
+
     const locationModal = document.querySelector('.modal-location');
     function showLocation(){
         locationModal.style.display = 'block';
@@ -447,6 +629,52 @@
     function hideLocation(){
         locationModal.style.display = 'none';
         body.style.overflow = 'auto';
+    }
+
+    const accountModal = document.querySelector('.modal-account');
+    const accountBank = document.querySelector('#account-bank');
+    const accountAddr = document.querySelector('#account');
+    const accountName = document.querySelector('#account-name');
+    const copyMessage = document.querySelector('#copy-message');
+    var copyText = "";
+    function showAccountModal(bank, account, name){
+        accountBank.innerHTML = bank;
+        accountAddr.innerHTML = account;
+        accountName.innerHTML = "예금주 : "+ name;
+        copyText = account.replaceAll('-','');
+
+        accountModal.style.display = 'block';
+        copyMessage.style.display = 'none';
+        body.style.overflow = 'hidden';
+    }
+    function hideAccountModal(){
+        accountModal.style.display = 'none';
+        body.style.overflow = 'auto';
+    }
+    function accountCopy(){
+        if (navigator.clipboard && window.isSecureContext) {
+            // navigator clipboard api method'
+            navigator.clipboard.writeText(copyText);
+            copyMessage.style.display = 'block';
+            return
+        } else {
+            // text area method
+            let textArea = document.createElement("textarea");
+            textArea.value = copyText;
+            // make the textarea out of viewport
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            return new Promise((res, rej) => {
+                // here the magic happens
+                document.execCommand('copy') ? res() : rej();
+                textArea.remove();
+                copyMessage.style.display = 'block';
+            });
+        }
     }
 </script>
 <style>
@@ -515,7 +743,18 @@
 
     .dotted {
         width: 90%;
-        border-bottom: 2px dotted;
+        border-bottom: 1px dotted;
+        border-color: #cccccc;
+        border-top: 0;
+        border-left: 0;
+        padding: 0;
+        margin: 1px 5%;
+        height: 1px;
+    }
+
+    .dashed {
+        width: 90%;
+        border-bottom: 1px dashed;
         border-color: #cccccc;
         border-top: 0;
         border-left: 0;
@@ -527,7 +766,7 @@
     .empty {
         border: 0;
         padding: 0;
-        margin: 1vh;
+        margin: 10px;
         height: 1px;
     }
     .flex {
@@ -607,6 +846,37 @@
         margin-left: 32px;
     }
 
+    .modal-account{
+        position: fixed;
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 100%;
+        max-width: 100vw;
+        max-height: 100vh;
+        z-index: 10;
+
+        display: none;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-account-body {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        background-color: white;
+        border-radius: 10px;
+
+        width: 240px;
+
+        padding: 10px;
+
+        text-align: left;
+
+        transform: translateX(-50%) translateY(-50%);
+    }
+
     .modal {
         position: fixed;
         top: 0;
@@ -631,7 +901,7 @@
         transform: translateX(-50%) translateY(-50%);
     }
 
-    .modal_body img {
+    .modal-body img {
         max-width: 200%;
         max-height: 100vh;
         transform: translateX(-25%);
@@ -680,7 +950,7 @@
 
     .row {
         display: flex;
-        flex : 0 0 100%;
+        flex : 0 1 100%;
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
@@ -695,8 +965,30 @@
         width: 100%;
     }
     .col-50 {
+        display: flex;
         flex-direction: column;
         width: 50%;
+    }
+    .col-49 {
+        display: flex;
+        flex-direction: column;
+        width: 49%;
+    }
+    .col-40 {
+        display: flex;
+        flex-direction: column;
+        width: 40%;
+    }
+    
+    .col-35 {
+        display: flex;
+        flex-direction: column;
+        width: 35%;
+    }
+    .col-20 {
+        display: flex;
+        flex-direction: column;
+        width: 20%;
     }
 
     .col-10 {
@@ -707,6 +999,18 @@
 
     .col-10 p {
         font-size: 14px;
+    }
+
+    .col-7 {
+        flex-direction: column;
+        width: 7%;
+        margin: 10px 0;
+    }
+
+    .col-6 {
+        flex-direction: column;
+        width: 6%;
+        margin: 10px 0;
     }
 
     .blue {
@@ -729,6 +1033,20 @@
         background-color: red;
         border-radius: 50%;
         line-height: 20px;
+    }
+
+    #btn-bgm {
+        position: fixed;
+        top:0;
+        right: 0;
+        width: 40px;
+        background-color: transparent;
+        padding: 0;
+        margin: 0;
+        border-style: none;
+    }
+    #btn-bgm img {
+        width: 100%;
     }
 
     .f10 {
@@ -759,15 +1077,27 @@
         font-weight: 500;
     }
 
+    .right-border{
+        border-right: 1px dashed #cccccc;
+    }
+
+    .margin-20{
+        margin: 20px;
+    }
+
     .map {
         margin: 30px;
+    }
+
+    .copy-message {
+        display: none;
     }
 
     .button {
         background-color: #dddddd;
         margin: auto;
         padding: 5px 20px;
-        border-radius: 10px;
+        border-radius: 15px;
         border-style: hidden;
         color: #121212;
     }
@@ -780,8 +1110,8 @@
         color: #121212;
     }
 
-    .phone{
-        width: 30px;
+    .contect{
+        margin-top: 5px;
     }
 
     .subject {
@@ -812,4 +1142,9 @@
     .title {
         padding: 20px;
     }
+
+    .kakao {
+        background-color: #fef01b;
+    }
+
 </style>
