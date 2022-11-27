@@ -24,7 +24,7 @@ func readDir(dirname string) ([]fs.FileInfo, error) {
 }
 
 func Mobile(c *gin.Context) {
-	targetDir := "./assets/weding"
+	targetDir := "./assets/gallary"
 	fileNames := make([]string, 0, 30)
 	files, _ := readDir(targetDir)
 	for _, file := range files {
