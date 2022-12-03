@@ -31,7 +31,7 @@ func Mobile(c *gin.Context) {
 		fileNames = append(fileNames, targetDir[1:]+"/"+file.Name())
 	}
 
-	c.HTML(http.StatusOK, "weding-mobile.tmpl", gin.H{
+	c.HTML(http.StatusOK, "wedding-mobile.tmpl", gin.H{
 		"title": "정종선 ❤️ 김지안 결혼합니다.",
 		"files": fileNames,
 	})

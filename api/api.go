@@ -38,9 +38,9 @@ func Init(r *gin.Engine) {
 		aiGroup.POST("chat", ai.Chat)
 	}
 
-	wedingGroup := r.Group("weding")
+	weddingGroup := r.Group("wedding")
 	{
-		wedingGroup.GET("mobile", route.Mobile)
+		weddingGroup.GET("mobile", route.Mobile)
 	}
 
 	websocketGroup := r.Group("ws")
